@@ -148,13 +148,22 @@ def git_commit(workspace, message):
 
 
 def write_outputs(changed, files, light, dark):
-    """Append $GITHUB_OUTPUT lines."""
+    """Append $GITHUB_OUTPUT lines.
+
+    Uses heredoc syntax for the multi-file list because GitHub's file-command
+    parser rejects values containing newlines in plain 'key=value' form.
+    """
     out = os.environ.get("GITHUB_OUTPUT")
     if not out:
         return
     with open(out, "a") as f:
         f.write(f"changed={'true' if changed else 'false'}\n")
-        f.write(f"files={chr(10).join(files)}\n")
+        if files:
+            delimiter = "__MyStarHistoryFiles__"
+            f.write(f"files<<{delimiter}\n")
+            for fp in files:
+                f.write(f"{fp}\n")
+            f.write(f"{delimiter}\n")
         if light:
             f.write(f"light={light}\n")
         if dark:
