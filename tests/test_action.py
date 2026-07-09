@@ -231,3 +231,63 @@ def test_clean_old_files_only_matches_theme_prefix(tmp_path):
 def test_parse_bool_none_returns_default():
     assert action.parse_bool(None, default=True) is True
     assert action.parse_bool(None, default=False) is False
+
+
+# --- write_outputs ----------------------------------------------------------
+
+def test_write_outputs_single_line_values(tmp_path, monkeypatch):
+    out = tmp_path / "outputs.txt"
+    monkeypatch.setattr(os, "environ", {**os.environ, "GITHUB_OUTPUT": str(out)})
+
+    action.write_outputs(changed=True, files=[], light=None, dark=None)
+
+    content = out.read_text()
+    assert "changed=true\n" in content
+
+
+def test_write_outputs_multiline_files_use_heredoc(tmp_path, monkeypatch):
+    """Regression test: $GITHUB_OUTPUT multiline values must use heredoc
+    syntax. Plain 'files=foo\\nbar' fails because the second line is parsed
+    as a new key=value pair and rejected."""
+    out = tmp_path / "outputs.txt"
+    monkeypatch.setattr(os, "environ", {**os.environ, "GITHUB_OUTPUT": str(out)})
+
+    action.write_outputs(
+        changed=True,
+        files=["a/x.svg", "a/y.svg"],
+        light="a/x.svg",
+        dark="a/y.svg",
+    )
+
+    content = out.read_text()
+    # Heredoc syntax for multiline value
+    assert "files<<__" in content
+    # Closing delimiter present
+    assert "__MyStarHistoryFiles__\n" in content
+    # Both file paths live inside the heredoc block
+    assert "a/x.svg\n" in content
+    assert "a/y.svg\n" in content
+    # Single-line values stay plain
+    assert "changed=true\n" in content
+    assert "light=a/x.svg\n" in content
+    assert "dark=a/y.svg\n" in content
+
+
+def test_write_outputs_no_files_skips_entry(tmp_path, monkeypatch):
+    out = tmp_path / "outputs.txt"
+    monkeypatch.setattr(os, "environ", {**os.environ, "GITHUB_OUTPUT": str(out)})
+
+    action.write_outputs(changed=False, files=[], light=None, dark=None)
+
+    content = out.read_text()
+    assert "changed=false\n" in content
+    assert "files" not in content
+    assert "light" not in content
+    assert "dark" not in content
+
+
+def test_write_outputs_no_env_no_crash(tmp_path, monkeypatch):
+    """If GITHUB_OUTPUT is unset (local invocation), write_outputs is a no-op."""
+    monkeypatch.setattr(os, "environ", {k: v for k, v in os.environ.items() if k != "GITHUB_OUTPUT"})
+    action.write_outputs(True, ["x"], "x", None)  # must not raise
+

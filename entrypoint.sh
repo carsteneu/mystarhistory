@@ -12,4 +12,9 @@ if [ -z "$GH_TOKEN" ]; then
 fi
 
 cd "$GITHUB_WORKSPACE"
+
+# GitHub Actions checks out the workspace as the runner user; the Docker
+# container runs as root, so git refuses to operate without this exception.
+git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
 exec python3 /action/action.py
