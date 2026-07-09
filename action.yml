@@ -17,16 +17,16 @@ inputs:
     description: 'Where to write the generated SVGs (relative to repo root).'
     required: false
     default: 'assets/my-star-history'
-  commit:
-    description: 'Whether to git-add, commit, and push the generated files.'
+  branch:
+    description: 'Branch to push the SVGs to. Default: star-history (orphan branch, does not pollute main).'
     required: false
-    default: 'true'
+    default: 'star-history'
   commit-message:
     description: 'Commit message used when pushing the updated chart.'
     required: false
     default: 'chore: update star history [skip ci]'
   token:
-    description: 'Token for the stargazers API. Default GITHUB_TOKEN works for the current repo.'
+    description: 'Token for git push and stargazers API. Default GITHUB_TOKEN works for the current repo.'
     required: false
     default: ${{ github.token }}
   color:

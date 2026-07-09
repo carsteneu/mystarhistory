@@ -1,15 +1,15 @@
 """GitHub Action orchestrator for mystarhistory.
 
-Renders star-history SVGs for one or more repos and commits them to the
-repository. Does NOT modify the README — the user sets up the embed once
-and the action just refreshes the image files.
+Renders star-history SVGs for one or more repos and pushes them to a
+dedicated orphan branch (default: star-history). This avoids polluting
+the main branch with chart updates and works with branch protection.
 
 Inputs (read from environment, per GitHub Actions convention):
 
     INPUT_REPOS            Comma-separated owner/repo list.
     INPUT_THEMES           Comma list, subset of {light,dark}. Default: light,dark
     INPUT_OUTPUT_DIR       Where SVGs are written. Default: assets/my-star-history
-    INPUT_COMMIT           'true' to git-commit. Default: true
+    INPUT_BRANCH           Branch to push to. Default: star-history
     INPUT_COMMIT_MESSAGE   Default: 'chore: update star history [skip ci]'
     INPUT_COLOR            Chart line color. Default: #dd4528
     INPUT_TITLE            Chart title. Default: 'Star History'
@@ -28,32 +28,62 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from mystarhistory import fetch_stargazers, generate_svg
 
 
-def parse_bool(value, default=False):
-    if value is None:
-        return default
-    return value.strip().lower() in ("1", "true", "yes", "on")
-
-
 def parse_inputs(env):
     return {
         "repos": [r.strip() for r in env.get("INPUT_REPOS", "").split(",") if r.strip()],
         "themes": [t.strip() for t in env.get("INPUT_THEMES", "light,dark").split(",") if t.strip()],
         "output_dir": env.get("INPUT_OUTPUT_DIR", "assets/my-star-history"),
-        "commit": parse_bool(env.get("INPUT_COMMIT"), True),
+        "branch": env.get("INPUT_BRANCH", "star-history"),
         "commit_message": env.get("INPUT_COMMIT_MESSAGE", "chore: update star history [skip ci]"),
         "color": env.get("INPUT_COLOR", "#dd4528"),
         "title": env.get("INPUT_TITLE", "Star History"),
     }
 
 
-def git_commit(workspace, message):
-    subprocess.run(["git", "add", "-A"], check=True, cwd=workspace)
-    diff = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=workspace)
-    if diff.returncode == 0:
-        return False
-    subprocess.run(["git", "commit", "-m", message], check=True, cwd=workspace)
-    subprocess.run(["git", "push"], check=True, cwd=workspace)
-    return True
+def prepare_orphan_branch(workspace, branch, github_token):
+    """Create or switch to an orphan branch containing only chart files.
+
+    Works in a temporary directory to avoid any risk to the main workspace.
+    The SVGs are written there, committed, and pushed. The main checkout
+    is never modified."""
+    import tempfile
+
+    tmp = Path(tempfile.mkdtemp(prefix="star-history-"))
+    subprocess.run(["git", "init", "-b", branch, str(tmp)], check=True)
+
+    if not github_token:
+        raise RuntimeError("No token available for git push")
+
+    repo_url = os.environ.get("GITHUB_REPOSITORY", "")
+    if repo_url:
+        authed_url = f"https://x-access-token:{github_token}@github.com/{repo_url}"
+    else:
+        remote_url = subprocess.run(
+            ["git", "config", "--get", "remote.origin.url"],
+            capture_output=True, text=True, cwd=workspace,
+        ).stdout.strip()
+        authed_url = remote_url.replace(
+            "https://github.com/",
+            f"https://x-access-token:{github_token}@github.com/",
+        )
+
+    subprocess.run(["git", "remote", "add", "origin", authed_url],
+                   check=True, cwd=tmp)
+
+    # Check if branch exists remotely
+    ls = subprocess.run(
+        ["git", "ls-remote", "--heads", "origin", branch],
+        capture_output=True, text=True, cwd=tmp,
+    )
+    if ls.stdout.strip():
+        subprocess.run(["git", "fetch", "origin", branch], check=True, cwd=tmp)
+        subprocess.run(["git", "checkout", branch], check=True, cwd=tmp)
+
+    subprocess.run(["git", "config", "user.email",
+                    "github-actions[bot]@users.noreply.github.com"], cwd=tmp)
+    subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=tmp)
+
+    return tmp
 
 
 def write_outputs(changed, files):
@@ -77,7 +107,18 @@ def main():
         return 1
 
     workspace = Path(os.environ.get("GITHUB_WORKSPACE", "."))
-    out_dir = workspace / cfg["output_dir"]
+    github_token = os.environ.get("INPUT_TOKEN") or os.environ.get("GITHUB_TOKEN", "")
+
+    git_config = [
+        ["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"],
+        ["git", "config", "--global", "user.name", "github-actions[bot]"],
+    ]
+    for cmd in git_config:
+        subprocess.run(cmd, check=True)
+
+    branch_dir = prepare_orphan_branch(workspace, cfg["branch"], github_token)
+
+    out_dir = branch_dir / cfg["output_dir"]
     out_dir.mkdir(parents=True, exist_ok=True)
 
     generated = []
@@ -101,9 +142,16 @@ def main():
 
     write_outputs(True, generated)
 
-    if cfg["commit"]:
-        committed = git_commit(workspace, cfg["commit_message"])
-        print("Committed and pushed" if committed else "No changes to commit")
+    subprocess.run(["git", "add", "-A"], check=True, cwd=branch_dir)
+    diff = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=branch_dir)
+    if diff.returncode != 0:
+        subprocess.run(["git", "commit", "-m", cfg["commit_message"]],
+                       check=True, cwd=branch_dir)
+        subprocess.run(["git", "push", "-u", "origin", cfg["branch"]],
+                       check=True, cwd=branch_dir)
+        print(f"Pushed to {cfg['branch']}")
+    else:
+        print("No changes to commit")
 
     return 0
 

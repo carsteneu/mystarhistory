@@ -91,7 +91,7 @@ For GitHub theme auto-switching (light + dark), use the `<picture>` element:
 
 ## As a GitHub Action
 
-Want the chart to update itself? Reference this repo as an action in your workflow. The action renders the chart on a schedule and commits the SVG files to your repo. No CLI install, no manual runs.
+Want the chart to update itself? The action pushes SVGs to a dedicated `star-history` branch — an orphan branch that does not pollute your main branch or commit history. Works with branch protection, no PAT or bypass needed.
 
 Add `.github/workflows/star-history.yml` in **your** repo:
 
@@ -99,7 +99,7 @@ Add `.github/workflows/star-history.yml` in **your** repo:
 name: Star History
 on:
   schedule:
-    - cron: '0 0 * * *'   # daily; pick 3h/6h/daily, star counts move slowly
+    - cron: '0 0 * * *'
   workflow_dispatch:
 permissions:
   contents: write
@@ -113,16 +113,16 @@ jobs:
           repos: ${{ github.repository }}
 ```
 
-Then add a `<picture>` block to your README pointing at the output directory:
+Then add a `<picture>` block to your README pointing at the `star-history` branch via raw URL:
 
 ```html
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/my-star-history/star-history-dark.svg">
-  <img alt="Star history" src="assets/my-star-history/star-history-light.svg">
+  <source media="(prefers-color-scheme: dark)" src="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-dark.svg">
+  <img alt="Star history" src="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-light.svg">
 </picture>
 ```
 
-The action writes `star-history-light.svg` and `star-history-dark.svg` to the output directory on each run. GitHub may cache the images for a few hours after each commit — at a daily cadence that is rarely noticeable.
+Replace `OWNER/REPO` with your repo slug. The branch is created automatically on the first run.
 
 ### Inputs
 
@@ -131,9 +131,9 @@ The action writes `star-history-light.svg` and `star-history-dark.svg` to the ou
 | `repos` | current repo | Comma-separated `owner/repo` list. |
 | `themes` | `light,dark` | Comma-separated subset of `{light, dark}`. |
 | `output-dir` | `assets/my-star-history` | Where SVGs are written. |
-| `commit` | `true` | `git add`, commit, and push. |
+| `branch` | `star-history` | Orphan branch to push to. Not protected, no main pollution. |
 | `commit-message` | `chore: update star history [skip ci]` | Commit message. |
-| `token` | `${{ github.token }}` | Token for the stargazers API. Works for your own repo. |
+| `token` | `${{ github.token }}` | Token for stargazers API and git push. |
 | `color` | `#dd4528` | Chart line color as `#rrggbb`. |
 | `title` | `Star History` | Chart title. |
 
@@ -145,9 +145,39 @@ The action writes `star-history-light.svg` and `star-history-dark.svg` to the ou
 ### How it works
 
 - The action runs in a Docker image (Python 3 + `gh` CLI + `git`).
-- It calls the same `mystarhistory.py` renderer this repo ships, so CLI and action output are identical.
+- It creates (or reuses) an orphan branch named `star-history` that contains only the SVG files — no repo history, no interference with your codebase.
 - SVGs are written as `star-history-{theme}.svg` (fixed filenames) to the output directory.
-- The default `${{ github.token }}` is enough to read stargazers for the repo the workflow lives in. For charting other repos, pass a classic PAT with `public_repo` scope (or a fine-grained read token) via `token:`.
+- The default `${{ github.token }}` is enough. No PAT, no branch protection bypass, no Secrets to configure.
+
+The orphan branch is managed in a temporary directory — your main workspace is never modified. Here is the exact git sequence:
+
+**First run** (branch does not exist yet):
+
+```text
+git init -b star-history /tmp/star-history-XXXX
+git remote add origin https://x-access-token:$TOKEN@github.com/OWNER/REPO
+git ls-remote --heads origin star-history     # → empty
+# generate SVGs
+git add -A
+git commit -m "chore: update star history [skip ci]"
+git push -u origin star-history               # creates the branch
+```
+
+**Subsequent runs** (branch exists):
+
+```text
+git init -b star-history /tmp/star-history-XXXX
+git remote add origin https://x-access-token:$TOKEN@github.com/OWNER/REPO
+git ls-remote --heads origin star-history     # → sha found
+git fetch origin star-history
+git checkout star-history
+# regenerate SVGs (overwrites previous versions)
+git add -A
+git commit -m "chore: update star history [skip ci]"
+git push
+```
+
+The temp directory is discarded after the job ends. Your `main` branch, your commit history, and your workspace are never touched.
 
 ## Automation (optional)
 
@@ -254,8 +284,8 @@ What tests **do not** cover: whether the chart looks right. Visual review remain
 This repo's own star history, updated daily by the [GitHub Action](#as-a-github-action) shipped in this repo (eating our own dog food):
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/my-star-history/star-history-dark.svg">
-  <img alt="Star history" src="assets/my-star-history/star-history-light.svg">
+  <source media="(prefers-color-scheme: dark)" src="https://raw.githubusercontent.com/carsteneu/mystarhistory/star-history/assets/my-star-history/star-history-dark.svg">
+  <img alt="Star history" src="https://raw.githubusercontent.com/carsteneu/mystarhistory/star-history/assets/my-star-history/star-history-light.svg">
 </picture>
 
 ## Credits
