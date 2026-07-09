@@ -255,7 +255,7 @@ This repo's own star history, updated daily by the [GitHub Action](#as-a-github-
   <source media="(prefers-color-scheme: dark)" srcset="assets/my-star-history/star-history-dark-20260709145426.svg">
   <img alt="Star history" src="assets/my-star-history/star-history-light-20260709145426.svg">
 </picture>
-<sub><a href="https://github.com/carsteneu/mystarhistory">made with mystarhistory</a></sub>
+<sub align="right"><a href="https://github.com/carsteneu/mystarhistory">Made with carsteneu/mystarhistory</a></sub>
 <!-- my-star-history:end -->
 
 ## Credits

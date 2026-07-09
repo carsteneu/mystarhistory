@@ -102,7 +102,7 @@ def build_picture_block(output_dir, light_file, dark_file):
     """
     rel = output_dir
     attribution = (
-        f'<sub><a href="https://github.com/carsteneu/mystarhistory">made with mystarhistory</a></sub>'
+        f'<sub align="right"><a href="https://github.com/carsteneu/mystarhistory">Made with carsteneu/mystarhistory</a></sub>'
     )
     if light_file and dark_file:
         return (
