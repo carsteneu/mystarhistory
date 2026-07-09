@@ -128,14 +128,13 @@ def update_readme(readme_path, block, marker=MARKER):
     content = readme_path.read_text()
     start = f"<!-- {marker}:start -->"
     end = f"<!-- {marker}:end -->"
-    # Inner content: whitespace-only, OR an existing action block.
-    # The action block alternatives are kept tight to avoid matching
-    # arbitrary HTML the user might have placed between the markers.
-    inner = (
-        r"\s*"
-        r"|"
-        r"\s*(?:<picture>.*?</picture>|<img[^>]*alt=\"Star history\"[^>]*>)\s*"
-    )
+    # Inner content must be either whitespace-only OR an existing action block
+    # (<picture>...</picture> or <img alt="Star history">). The alternation is
+    # wrapped in its own non-capturing group so the | does not split the whole
+    # pattern into "start\s*" vs "<picture>...end" — that would let the second
+    # branch match a <picture> far away from the markers with DOTALL `.*?`
+    # spanning arbitrary text between them.
+    inner = r"(?:\s*|\s*(?:<picture>.*?</picture>|<img[^>]*alt=\"Star history\"[^>]*>)\s*)"
     pattern = re.compile(re.escape(start) + inner + re.escape(end), re.DOTALL)
     if not pattern.search(content):
         return False
