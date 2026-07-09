@@ -1,0 +1,59 @@
+name: 'My Star History'
+description: 'Render a self-updating star-history chart and commit it into your README. Self-hosted, xkcd-style, works after GitHub 2026 stargazers API restriction.'
+author: 'Carsten Euwens'
+branding:
+  icon: 'star'
+  color: 'red'
+inputs:
+  repos:
+    description: 'Comma-separated list of owner/repo slugs to chart. Defaults to the current repo.'
+    required: false
+    default: ''
+  themes:
+    description: 'Comma-separated subset of {light, dark}. Default: light,dark'
+    required: false
+    default: 'light,dark'
+  output-dir:
+    description: 'Where to write the generated SVGs (relative to repo root).'
+    required: false
+    default: 'assets/my-star-history'
+  readme:
+    description: 'README file path to update between markers.'
+    required: false
+    default: 'README.md'
+  update-readme:
+    description: 'Whether to rewrite the README block between the my-star-history markers.'
+    required: false
+    default: 'true'
+  commit:
+    description: 'Whether to git-add, commit, and push the generated files.'
+    required: false
+    default: 'true'
+  commit-message:
+    description: 'Commit message used when pushing the updated chart.'
+    required: false
+    default: 'chore: update star history [skip ci]'
+  token:
+    description: 'Token for the stargazers API. Default GITHUB_TOKEN works for the current repo.'
+    required: false
+    default: ${{ github.token }}
+  color:
+    description: 'Chart line color as #rrggbb. Default is star-history red.'
+    required: false
+    default: '#dd4528'
+  title:
+    description: 'Chart title shown above the plot.'
+    required: false
+    default: 'Star History'
+outputs:
+  changed:
+    description: '"true" if a new chart was generated and committed, "false" otherwise.'
+  files:
+    description: 'Newline-separated list of generated SVG paths.'
+  light:
+    description: 'Path of the newest light SVG, or empty.'
+  dark:
+    description: 'Path of the newest dark SVG, or empty.'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

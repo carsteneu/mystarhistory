@@ -97,6 +97,68 @@ Or as HTML for sizing control:
 <img src="star-history.svg" alt="Star History" width="800" />
 ```
 
+## As a GitHub Action
+
+Want the chart to update itself? Reference this repo as an action in your workflow. The action renders the chart on a schedule, writes it with a cache-busting timestamp filename, swaps it into your README between markers, and commits the result. No CLI install, no manual runs.
+
+Add `.github/workflows/star-history.yml` in **your** repo:
+
+```yaml
+name: Star History
+on:
+  schedule:
+    - cron: '0 0 * * *'   # daily; pick 3h/6h/daily, star counts move slowly
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  star-history:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: carsteneu/mystarhistory@main
+        with:
+          repos: ${{ github.repository }}
+```
+
+Then add these two marker comments to your README where the chart should appear:
+
+```html
+<!-- my-star-history:start -->
+<!-- my-star-history:end -->
+```
+
+Leave them empty. On each run the action fills the space between them with a `<picture>` block that auto-switches on GitHub's light/dark theme.
+
+### Inputs
+
+| input | default | description |
+|---|---|---|
+| `repos` | current repo | Comma-separated `owner/repo` list. |
+| `themes` | `light,dark` | Comma-separated subset of `{light, dark}`. |
+| `output-dir` | `assets/my-star-history` | Where SVGs are written. |
+| `readme` | `README.md` | README file to update between markers. |
+| `update-readme` | `true` | Rewrite the block between markers. |
+| `commit` | `true` | `git add`, commit, and push. |
+| `commit-message` | `chore: update star history [skip ci]` | Commit message. |
+| `token` | `${{ github.token }}` | Token for the stargazers API. Works for your own repo. |
+| `color` | `#dd4528` | Chart line color as `#rrggbb`. |
+| `title` | `Star History` | Chart title. |
+
+### Outputs
+
+- `changed`: `"true"` if a new chart was committed.
+- `files`: newline-separated paths of generated SVGs.
+- `light`, `dark`: newest chart paths per theme.
+
+### How it works
+
+- The action runs in a Docker image (Python 3 + `gh` CLI + `git`).
+- It calls the same `mystarhistory.py` renderer this repo ships, so CLI and action output are identical.
+- SVGs are written as `star-history-{theme}-{YYYYmmddHHMMSS}.svg` to cache-bust GitHub's image CDN. Old timestamped files are pruned each run so the repo does not accumulate them.
+- The README block between `<!-- my-star-history:start -->` and `<!-- my-star-history:end -->` is rewritten in place with a `<picture>` element for theme auto-switching.
+- The default `${{ github.token }}` is enough to read stargazers for the repo the workflow lives in. For charting other repos, pass a classic PAT with `public_repo` scope (or a fine-grained read token) via `token:`.
+
 ## Automation (optional)
 
 To keep the chart current, set up a GitHub Action that regenerates it on a schedule. The workflow clones `mystarhistory` fresh on each run, so you don't need to vendor anything into your repo:
