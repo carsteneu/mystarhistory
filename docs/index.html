@@ -156,6 +156,35 @@ footer a { color: var(--accent); text-decoration: none; }
 </header>
 
 <section>
+  <h2>Why your GitHub star history chart broke in 2026</h2>
+  <p>If you run an open-source project, chances are you had a <strong>star history</strong> chart embedded in your README before 2026. The popular service <a href="https://www.star-history.com">star-history.com</a> generated these charts on demand from the live GitHub API, and millions of README badges relied on it. Then GitHub changed the rules — and overnight, every embedded <strong>star-history.com chart</strong> stopped rendering for public visitors.</p>
+  <p>The change was in the <strong>stargazers API</strong>, the endpoint at <code>/repos/{owner}/{repo}/stargazers</code>. Before 2026, anyone could read the list of users who had starred a public repo, along with the timestamp of each star. The <strong>stargazers API is now restricted</strong> to repo admins and collaborators — anonymous browser requests get a 403. The motivation was reducing API abuse, but the side effect was that every client-side star-history widget broke, because they relied on the visitor's browser fetching stargazer data anonymously.</p>
+  <p>Repo owners can still read their own stargazer list (using <code>gh api</code> with their credentials), but visitors cannot. So a <strong>GitHub stars chart</strong> that renders for everyone needs a different approach: generate the SVG once with the owner's token, commit it as a static file, and let the README reference the static file. No client-side API calls, no broken embeds.</p>
+  <p>My Star History does exactly that. It's a <strong>self-hosted star history</strong> solution: you run the CLI or the GitHub Action, and the output is a static SVG file that lives in your repo and works for every visitor, regardless of API restrictions.</p>
+</section>
+
+<section>
+  <h2>Track GitHub stars over time</h2>
+  <p>A star-history chart is a simple way to visualize how a repository has grown. The X-axis shows time, the Y-axis shows cumulative star count, and the curve gives you a quick sense of when the project gained traction — a launch on Hacker News, a viral tweet, a mention in a popular newsletter.</p>
+  <p>Tracking <strong>GitHub stars over time</strong> is useful for maintainers who want to understand their project's momentum, for companies evaluating open-source dependencies, and for curious community members watching a project's trajectory. My Star History renders the chart as a <strong>star history SVG</strong> — a vector file that scales cleanly in any README, commits cleanly into git, and renders the same in light and dark themes.</p>
+  <p>The SVG is roughly 15 KB per theme, which is small enough to commit without bloating the repository. The xkcd-style sketch filter gives the chart a distinctive hand-drawn look that sets it apart from generic matplotlib exports.</p>
+</section>
+
+<section>
+  <h2>A self-hosted star-history.com alternative</h2>
+  <p>If you searched for a <strong>star-history.com alternative</strong>, this is what My Star History is. The original star-history.com is still a great web app for repo owners who log in with their token, but the embedded badge feature is broken for anonymous visitors since the API restriction. My Star History takes a different angle: instead of a hosted service, you generate the chart yourself with a single Python script or a GitHub Action, and the output is a static file you fully control.</p>
+  <p>The advantages of self-hosting your star-history chart:</p>
+  <ul>
+    <li><strong>No rate limits.</strong> The chart is a static SVG — no per-visitor API calls, no GitHub rate-limit risk.</li>
+    <li><strong>No third-party service.</strong> The SVG lives in your repo, not on someone else's server. If your repo exists, the chart exists.</li>
+    <li><strong>No broken embeds.</strong> A static SVG cannot "break" the way a live API-driven embed can. If the GitHub API changes again, your historical chart still renders.</li>
+    <li><strong>Full control.</strong> You can customize colors, dimensions, the chart title, and even fork the renderer if you want a different visual style.</li>
+    <li><strong>Privacy-friendly.</strong> No third-party JavaScript loads in your visitors' browsers. No tracking pixels. Just an image file.</li>
+  </ul>
+  <p>The tradeoff is that the chart is a snapshot, not a live view. It updates whenever you regenerate it — daily, weekly, or on demand. For most projects, daily is plenty.</p>
+</section>
+
+<section>
   <h2>What is this?</h2>
   <p>My Star History is a tool that generates a visual chart showing how a GitHub repository's star count has grown over time. The chart is rendered as a standalone SVG file with a hand-drawn xkcd sketch aesthetic, which you can commit to your repo and embed in your README.</p>
   <p>The original popular tool for this, <a href="https://www.star-history.com">star-history.com</a>, broke in 2026 when GitHub restricted the stargazers API endpoint to repo admins and collaborators. Embedded charts on README pages stopped rendering for public visitors — they saw "Your GitHub token is invalid" instead of the chart.</p>
