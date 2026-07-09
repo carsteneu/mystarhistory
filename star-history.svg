@@ -13,27 +13,27 @@
   </defs>
   <rect width="800" height="533" fill="#fff"/>
 <text x="50%" y="30" fill="#000" font-size="20" font-family="Handlee, cursive" font-weight="bold" text-anchor="middle">Star History</text>
-  <rect width="268" height="32" x="75" y="90" fill="#fff" fill-opacity="0.9" stroke="#000" stroke-width="1.5" rx="4" ry="4" filter="url(#xkcdify)"/><rect width="8" height="8" x="85" y="102" rx="2" ry="2" fill="#dd4528" filter="url(#xkcdify)"/><text x="101" y="110" fill="#000" font-size="15" font-family="Handlee, cursive" font-weight="bold">carsteneu/ai-memory-comparison</text>
-  <text x="31" y="468.0" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">0</text>
-  <line x1="60" y1="386.4" x2="765" y2="386.4" stroke="#eee" stroke-width="1" filter="url(#xkcdify)"/>
-  <text x="31" y="391.4" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">25</text>
-  <line x1="60" y1="309.8" x2="765" y2="309.8" stroke="#eee" stroke-width="1" filter="url(#xkcdify)"/>
-  <text x="31" y="314.79999999999995" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">50</text>
-  <line x1="60" y1="233.2" x2="765" y2="233.2" stroke="#eee" stroke-width="1" filter="url(#xkcdify)"/>
-  <text x="31" y="238.20000000000002" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">75</text>
-  <line x1="60" y1="156.6" x2="765" y2="156.6" stroke="#eee" stroke-width="1" filter="url(#xkcdify)"/>
-  <text x="31" y="161.59999999999997" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">100</text>
-  <line x1="60" y1="80.0" x2="765" y2="80.0" stroke="#eee" stroke-width="1" filter="url(#xkcdify)"/>
-  <text x="31" y="85.0" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">125</text>
-  <text x="6" y="271.5" fill="#000" font-size="17" font-family="Handlee, cursive" font-weight="bold" transform="rotate(-90, 6, 271.5)">GitHub Stars</text>
-  <text x="87.1" y="488" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">May 2026</text>
-  <text x="376.3" y="488" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">Jun 2026</text>
-  <text x="701.7" y="488" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">Jul 2026</text>
+  <rect width="268" height="32" x="105" y="90" fill="#fff" fill-opacity="0.9" stroke="#000" stroke-width="1.5" rx="4" ry="4" filter="url(#xkcdify)"/><rect width="8" height="8" x="115" y="102" rx="2" ry="2" fill="#dd4528" filter="url(#xkcdify)"/><text x="131" y="110" fill="#000" font-size="15" font-family="Handlee, cursive" font-weight="bold">carsteneu/ai-memory-comparison</text>
+  <text x="85" y="468.0" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold" text-anchor="end">0</text>
+  <line x1="90" y1="386.4" x2="765" y2="386.4" stroke="#eee" stroke-width="1" filter="url(#xkcdify)"/>
+  <text x="85" y="391.4" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold" text-anchor="end">25</text>
+  <line x1="90" y1="309.8" x2="765" y2="309.8" stroke="#eee" stroke-width="1" filter="url(#xkcdify)"/>
+  <text x="85" y="314.79999999999995" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold" text-anchor="end">50</text>
+  <line x1="90" y1="233.2" x2="765" y2="233.2" stroke="#eee" stroke-width="1" filter="url(#xkcdify)"/>
+  <text x="85" y="238.20000000000002" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold" text-anchor="end">75</text>
+  <line x1="90" y1="156.6" x2="765" y2="156.6" stroke="#eee" stroke-width="1" filter="url(#xkcdify)"/>
+  <text x="85" y="161.59999999999997" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold" text-anchor="end">100</text>
+  <line x1="90" y1="80.0" x2="765" y2="80.0" stroke="#eee" stroke-width="1" filter="url(#xkcdify)"/>
+  <text x="85" y="85.0" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold" text-anchor="end">125</text>
+  <text x="43" y="271.5" fill="#000" font-size="17" font-family="Handlee, cursive" font-weight="bold" transform="rotate(-90, 43, 271.5)">GitHub Stars</text>
+  <text x="116.0" y="488" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">May 2026</text>
+  <text x="392.9" y="488" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">Jun 2026</text>
+  <text x="704.4" y="488" fill="#000" font-size="16" font-family="Handlee, cursive" font-weight="bold">Jul 2026</text>
   <text x="50%" y="525" fill="#000" font-size="17" font-family="Handlee, cursive" font-weight="bold">Date</text>
-  <line x1="60" y1="80" x2="60" y2="463" stroke="#222" stroke-width="2.5" filter="url(#xkcdify)"/>
-  <line x1="60" y1="463" x2="765" y2="463" stroke="#222" stroke-width="2.5" filter="url(#xkcdify)"/>
-  <path d="M 60.0,459.9 C 69.0,457.4 102.2,447.7 114.2,444.6 C 126.3,441.6 126.3,443.1 132.3,441.6 C 138.3,440.0 135.3,440.0 150.4,435.4 C 165.4,430.8 207.6,425.7 222.7,414.0 C 237.8,402.2 234.7,375.2 240.8,365.0 C 246.8,354.7 252.8,356.3 258.8,352.7 C 264.9,349.1 270.9,346.1 276.9,343.5 C 282.9,341.0 286.0,338.9 295.0,337.4 C 304.0,335.8 322.1,335.3 331.2,334.3 C 340.2,333.3 334.2,332.8 349.2,331.2 C 364.3,329.7 394.4,327.2 421.5,325.1 C 448.7,323.1 478.8,321.0 511.9,319.0 C 545.1,316.9 599.3,321.0 620.4,312.9 C 641.5,304.7 632.4,279.2 638.5,270.0 C 644.5,260.8 650.5,267.4 656.5,257.7 C 662.6,248.0 668.6,224.0 674.6,211.8 C 680.6,199.5 686.7,190.8 692.7,184.2 C 698.7,177.5 704.7,178.0 710.8,171.9 C 716.8,165.8 719.8,154.0 728.8,147.4 C 737.9,140.8 759.0,134.6 765.0,132.1 L 765.0,463.0 L 60.0,463.0 Z" fill="url(#g)"/>
-  <path d="M 60.0,459.9 C 69.0,457.4 102.2,447.7 114.2,444.6 C 126.3,441.6 126.3,443.1 132.3,441.6 C 138.3,440.0 135.3,440.0 150.4,435.4 C 165.4,430.8 207.6,425.7 222.7,414.0 C 237.8,402.2 234.7,375.2 240.8,365.0 C 246.8,354.7 252.8,356.3 258.8,352.7 C 264.9,349.1 270.9,346.1 276.9,343.5 C 282.9,341.0 286.0,338.9 295.0,337.4 C 304.0,335.8 322.1,335.3 331.2,334.3 C 340.2,333.3 334.2,332.8 349.2,331.2 C 364.3,329.7 394.4,327.2 421.5,325.1 C 448.7,323.1 478.8,321.0 511.9,319.0 C 545.1,316.9 599.3,321.0 620.4,312.9 C 641.5,304.7 632.4,279.2 638.5,270.0 C 644.5,260.8 650.5,267.4 656.5,257.7 C 662.6,248.0 668.6,224.0 674.6,211.8 C 680.6,199.5 686.7,190.8 692.7,184.2 C 698.7,177.5 704.7,178.0 710.8,171.9 C 716.8,165.8 719.8,154.0 728.8,147.4 C 737.9,140.8 759.0,134.6 765.0,132.1" fill="none" stroke="#dd4528" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#xkcdify)"/>
+  <line x1="90" y1="80" x2="90" y2="463" stroke="#222" stroke-width="2.5" filter="url(#xkcdify)"/>
+  <line x1="90" y1="463" x2="765" y2="463" stroke="#222" stroke-width="2.5" filter="url(#xkcdify)"/>
+  <path d="M 90.0,459.9 C 98.7,457.4 130.4,447.7 141.9,444.6 C 153.5,441.6 153.5,443.1 159.2,441.6 C 165.0,440.0 162.1,440.0 176.5,435.4 C 191.0,430.8 231.3,425.7 245.8,414.0 C 260.2,402.2 257.3,375.2 263.1,365.0 C 268.8,354.7 274.6,356.3 280.4,352.7 C 286.2,349.1 291.9,346.1 297.7,343.5 C 303.5,341.0 306.3,338.9 315.0,337.4 C 323.7,335.8 341.0,335.3 349.6,334.3 C 358.3,333.3 352.5,332.8 366.9,331.2 C 381.3,329.7 410.2,327.2 436.2,325.1 C 462.1,323.1 491.0,321.0 522.7,319.0 C 554.4,316.9 606.3,321.0 626.5,312.9 C 646.7,304.7 638.1,279.2 643.8,270.0 C 649.6,260.8 655.4,267.4 661.2,257.7 C 666.9,248.0 672.7,224.0 678.5,211.8 C 684.2,199.5 690.0,190.8 695.8,184.2 C 701.5,177.5 707.3,178.0 713.1,171.9 C 718.8,165.8 721.7,154.0 730.4,147.4 C 739.0,140.8 759.2,134.6 765.0,132.1 L 765.0,463.0 L 90.0,463.0 Z" fill="url(#g)"/>
+  <path d="M 90.0,459.9 C 98.7,457.4 130.4,447.7 141.9,444.6 C 153.5,441.6 153.5,443.1 159.2,441.6 C 165.0,440.0 162.1,440.0 176.5,435.4 C 191.0,430.8 231.3,425.7 245.8,414.0 C 260.2,402.2 257.3,375.2 263.1,365.0 C 268.8,354.7 274.6,356.3 280.4,352.7 C 286.2,349.1 291.9,346.1 297.7,343.5 C 303.5,341.0 306.3,338.9 315.0,337.4 C 323.7,335.8 341.0,335.3 349.6,334.3 C 358.3,333.3 352.5,332.8 366.9,331.2 C 381.3,329.7 410.2,327.2 436.2,325.1 C 462.1,323.1 491.0,321.0 522.7,319.0 C 554.4,316.9 606.3,321.0 626.5,312.9 C 646.7,304.7 638.1,279.2 643.8,270.0 C 649.6,260.8 655.4,267.4 661.2,257.7 C 666.9,248.0 672.7,224.0 678.5,211.8 C 684.2,199.5 690.0,190.8 695.8,184.2 C 701.5,177.5 707.3,178.0 713.1,171.9 C 718.8,165.8 721.7,154.0 730.4,147.4 C 739.0,140.8 759.2,134.6 765.0,132.1" fill="none" stroke="#dd4528" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#xkcdify)"/>
   <circle cx="765.0" cy="132.1" r="5" fill="#dd4528" stroke="#fff" stroke-width="2" filter="url(#xkcdify)"/>
 <text x="735.0" y="124.1" fill="#dd4528" font-size="18" font-family="Handlee, cursive" font-weight="bold">108</text>
 </svg>

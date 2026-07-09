@@ -95,7 +95,7 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=
         sys.exit(1)
 
     w, h = width, height
-    pad_l, pad_r, pad_t, pad_b = 60, 35, 80, 70
+    pad_l, pad_r, pad_t, pad_b = 90, 35, 80, 70
     plot_w, plot_h = w - pad_l - pad_r, h - pad_t - pad_b
 
     max_stars = cum_data[-1][1]
@@ -169,10 +169,10 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=
                 f'<line x1="{pad_l}" y1="{y_val:.1f}" x2="{w - pad_r}" y2="{y_val:.1f}" '
                 f'stroke="{GRID_COLOR}" stroke-width="1"{XKCD}/>'
             )
-        y_elements.append(text_el(pad_l - 29, y_val + 5, fmt(i), FF, fill=FG))
+        y_elements.append(text_el(pad_l - 5, y_val + 5, fmt(i), FF, fill=FG, anchor='end'))
 
-    y_elements.append(text_el(6, pad_t + plot_h/2, 'GitHub Stars', FF, size=17, fill=FG,
-                              transform=f'rotate(-90, 6, {pad_t + plot_h/2:.1f})'))
+    y_elements.append(text_el(43, pad_t + plot_h/2, 'GitHub Stars', FF, size=17, fill=FG,
+                              transform=f'rotate(-90, 43, {pad_t + plot_h/2:.1f})'))
 
     # X-axis (unique months)
     prev_month = None
