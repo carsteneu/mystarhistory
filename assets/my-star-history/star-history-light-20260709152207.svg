@@ -26,4 +26,5 @@
   <path d="" fill="none" stroke="#dd4528" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#xkcdify)"/>
   <circle cx="90.0" cy="447.7" r="5" fill="#dd4528" stroke="#fff" stroke-width="2" filter="url(#xkcdify)"/>
 <text x="102.0" y="439.7" fill="#dd4528" font-size="18" font-family="Handlee, cursive" font-weight="bold">1</text>
+  <a href="https://github.com/carsteneu/mystarhistory" target="_blank" rel="noopener"><text x="763" y="527" font-size="10" font-family="Handlee, cursive" fill="#000" fill-opacity="0.4" text-anchor="end">Made with carsteneu/mystarhistory</text></a>
 </svg>
