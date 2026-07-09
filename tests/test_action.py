@@ -273,6 +273,49 @@ def test_update_readme_replaces_existing_img_block(tmp_path):
     assert "old.svg" not in new
 
 
+def test_update_readme_does_not_span_across_unmarked_picture_blocks(tmp_path):
+    """Critical regression: a <picture> block OUTSIDE the markers (e.g. in a
+    different README section) must NOT be paired with the markers by the regex.
+
+    Before the fix, the alternation `\\s*|\\s*<picture>...` was not wrapped in
+    a group, so the `|` split the whole pattern into two branches:
+      1. `start\\s*` (matched start marker alone, no end required)
+      2. `\\s*<picture>...</picture>\\s* end` (matched a <picture> with end
+         marker, no start required)
+
+    Branch 2 could match a <picture> far above the markers and use DOTALL
+    `.*?` to span the entire README content between them, destroying
+    everything in between when re.sub replaced the giant match.
+    """
+    content = (
+        "# Project\n\n"
+        "## Example\n\n"
+        "Intro text.\n\n"
+        "<picture>\n"
+        '  <img src="demo.svg" alt="Demo">\n'
+        "</picture>\n\n"
+        "## Star History\n\n"
+        "<!-- my-star-history:start -->\n"
+        '<img alt="Star history" src="old.svg">\n'
+        "<!-- my-star-history:end -->\n"
+    )
+    readme = tmp_path / "README.md"
+    readme.write_text(content)
+    block = '<img alt="Star history" src="new.svg">'
+
+    result = action.update_readme(readme, block)
+
+    assert result is True
+    new = readme.read_text()
+    # The demo <picture> block must survive untouched
+    assert 'src="demo.svg"' in new
+    assert "Intro text." in new
+    assert "## Example" in new
+    # Only the marked block is replaced
+    assert "new.svg" in new
+    assert "old.svg" not in new
+
+
 # --- clean_old_files --------------------------------------------------------
 
 def test_clean_old_files_keeps_newest_per_theme(tmp_path):
