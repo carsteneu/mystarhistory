@@ -211,16 +211,6 @@ Then in your README:
 
 Drop the `--dark` flag and the `star-history-dark.svg` line if you only want a light chart.
 
-## Why not use star-history.com?
-
-It still works for you. The website needs your personal token to fetch star data. Embedded charts (`api.star-history.com/chart?...`) are broken for public visitors because GitHub now limits the stargazers endpoint to repo admins.
-
-mystarhistory generates a static SVG file that is:
-
-- **visible to everyone**: no token in the visitor's browser.
-- **rate-limit-proof**: no live API calls per page load.
-- **offline-friendly**: works in static hosts, GitHub Pages, mirrors.
-
 ## Development
 
 Tests use pytest. There is no application code change required to run them, only Python's PEP 668 rule on system Python means you should use a venv.
