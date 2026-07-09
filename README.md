@@ -2,6 +2,8 @@
 
 Generate a star-history SVG chart for any GitHub repo. Self-hosted, no external API, no token-sharing.
 
+[![CI](https://github.com/carsteneu/mystarhistory/actions/workflows/test.yml/badge.svg)](https://github.com/carsteneu/mystarhistory/actions/workflows/test.yml)
+[![Release](https://img.shields.io/github/v/release/carsteneu/mystarhistory)](https://github.com/carsteneu/mystarhistory/releases)
 [![Python](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
