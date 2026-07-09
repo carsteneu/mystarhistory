@@ -2,7 +2,7 @@ name: Star History
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # daily UTC; star counts move slowly
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:

@@ -14,7 +14,7 @@ def test_parse_inputs_defaults():
     assert cfg["repos"] == []
     assert cfg["themes"] == ["light", "dark"]
     assert cfg["output_dir"] == "assets/my-star-history"
-    assert cfg["commit"] is True
+    assert cfg["branch"] == "star-history"
     assert cfg["commit_message"] == "chore: update star history [skip ci]"
     assert cfg["color"] == "#dd4528"
     assert cfg["title"] == "Star History"
@@ -30,11 +30,9 @@ def test_parse_inputs_themes_subset():
     assert cfg["themes"] == ["dark"]
 
 
-def test_parse_inputs_bool_variants():
-    for true_val in ("true", "True", "1", "yes", "on"):
-        assert action.parse_inputs({"INPUT_COMMIT": true_val})["commit"] is True
-    for false_val in ("false", "0", "no", ""):
-        assert action.parse_inputs({"INPUT_COMMIT": false_val})["commit"] is False
+def test_parse_inputs_custom_branch():
+    cfg = action.parse_inputs({"INPUT_BRANCH": "gh-assets"})
+    assert cfg["branch"] == "gh-assets"
 
 
 # --- write_outputs ----------------------------------------------------------
@@ -71,10 +69,3 @@ def test_write_outputs_no_files_skips_entry(tmp_path, monkeypatch):
 def test_write_outputs_no_env_no_crash(tmp_path, monkeypatch):
     monkeypatch.setattr(os, "environ", {k: v for k, v in os.environ.items() if k != "GITHUB_OUTPUT"})
     action.write_outputs(True, ["x"])
-
-
-# --- parse_bool edge cases --------------------------------------------------
-
-def test_parse_bool_none_returns_default():
-    assert action.parse_bool(None, default=True) is True
-    assert action.parse_bool(None, default=False) is False
