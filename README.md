@@ -91,7 +91,7 @@ For GitHub theme auto-switching (light + dark), use the `<picture>` element:
 
 ## As a GitHub Action
 
-Want the chart to update itself? Reference this repo as an action in your workflow. The action renders the chart on a schedule, writes it with a cache-busting timestamp filename, swaps it into your README between markers, and commits the result. No CLI install, no manual runs.
+Want the chart to update itself? Reference this repo as an action in your workflow. The action renders the chart on a schedule and commits the SVG files to your repo. No CLI install, no manual runs.
 
 Add `.github/workflows/star-history.yml` in **your** repo:
 
@@ -108,14 +108,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: carsteneu/mystarhistory@main
+      - uses: carsteneu/mystarhistory@v1
         with:
           repos: ${{ github.repository }}
 ```
 
-Then add two HTML comment markers where the chart should appear. The opening comment contains `my-star-history:start`, the closing one `my-star-history:end`. Leave the lines between them empty — see the [Star History](#star-history) section below for a working example.
+Then add a `<picture>` block to your README pointing at the output directory:
 
-On each run the action fills the space between them with a `<picture>` block that auto-switches on GitHub's light/dark theme.
+```html
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/my-star-history/star-history-dark.svg">
+  <img alt="Star history" src="assets/my-star-history/star-history-light.svg">
+</picture>
+```
+
+The action writes `star-history-light.svg` and `star-history-dark.svg` to the output directory on each run. GitHub may cache the images for a few hours after each commit — at a daily cadence that is rarely noticeable.
 
 ### Inputs
 
@@ -124,8 +131,6 @@ On each run the action fills the space between them with a `<picture>` block tha
 | `repos` | current repo | Comma-separated `owner/repo` list. |
 | `themes` | `light,dark` | Comma-separated subset of `{light, dark}`. |
 | `output-dir` | `assets/my-star-history` | Where SVGs are written. |
-| `readme` | `README.md` | README file to update between markers. |
-| `update-readme` | `true` | Rewrite the block between markers. |
 | `commit` | `true` | `git add`, commit, and push. |
 | `commit-message` | `chore: update star history [skip ci]` | Commit message. |
 | `token` | `${{ github.token }}` | Token for the stargazers API. Works for your own repo. |
@@ -136,14 +141,12 @@ On each run the action fills the space between them with a `<picture>` block tha
 
 - `changed`: `"true"` if a new chart was committed.
 - `files`: newline-separated paths of generated SVGs.
-- `light`, `dark`: newest chart paths per theme.
 
 ### How it works
 
 - The action runs in a Docker image (Python 3 + `gh` CLI + `git`).
 - It calls the same `mystarhistory.py` renderer this repo ships, so CLI and action output are identical.
-- SVGs are written as `star-history-{theme}-{YYYYmmddHHMMSS}.svg` to cache-bust GitHub's image CDN. Old timestamped files are pruned each run so the repo does not accumulate them.
-- The README block between the `&lt;!-- my-star-history:start --&gt;` and `&lt;!-- my-star-history:end --&gt;` markers is rewritten in place with a `<picture>` element for theme auto-switching.
+- SVGs are written as `star-history-{theme}.svg` (fixed filenames) to the output directory.
 - The default `${{ github.token }}` is enough to read stargazers for the repo the workflow lives in. For charting other repos, pass a classic PAT with `public_repo` scope (or a fine-grained read token) via `token:`.
 
 ## Automation (optional)
@@ -250,13 +253,11 @@ What tests **do not** cover: whether the chart looks right. Visual review remain
 
 This repo's own star history, updated daily by the [GitHub Action](#as-a-github-action) shipped in this repo (eating our own dog food):
 
-<!-- my-star-history:start -->
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/my-star-history/star-history-dark-20260709145426.svg">
-  <img alt="Star history" src="assets/my-star-history/star-history-light-20260709145426.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/my-star-history/star-history-dark.svg">
+  <img alt="Star history" src="assets/my-star-history/star-history-light.svg">
 </picture>
 <sub align="right"><a href="https://github.com/carsteneu/mystarhistory">Made with carsteneu/mystarhistory</a></sub>
-<!-- my-star-history:end -->
 
 ## Credits
 
