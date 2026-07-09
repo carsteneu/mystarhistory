@@ -21,6 +21,4 @@ env/
 .DS_Store
 Thumbs.db
 
-# Output (users generate their own)
-star-history.svg
-*.svg
+# Note: SVGs are meant to be committed (see README "Embed in README").
