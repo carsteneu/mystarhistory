@@ -172,6 +172,41 @@ mystarhistory generates a static SVG file that is:
 - **rate-limit-proof**: no live API calls per page load.
 - **offline-friendly**: works in static hosts, GitHub Pages, mirrors.
 
+## Development
+
+Tests use pytest. There is no application code change required to run them, only Python's PEP 668 rule on system Python means you should use a venv.
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -e ".[dev]"
+.venv/bin/pytest
+```
+
+With coverage:
+
+```bash
+.venv/bin/pytest --cov=mystarhistory --cov-report=term-missing
+```
+
+### Snapshot tests
+
+`tests/golden/star-history-{light,dark}.svg` are checked-in reference SVGs. If `generate_svg()` output changes (intentionally), regenerate them:
+
+```bash
+.venv/bin/python tests/regenerate_golden.py
+git diff tests/golden/   # inspect the visual change
+git add tests/golden/
+```
+
+### What the tests cover
+
+- Pure logic (cumulative building, smoothing, number formatting, text-element composition): table-driven, fast.
+- CLI wiring (argparse, error paths, color normalization): main() invoked with mocked argv.
+- `fetch_stargazers()`: subprocess.run is monkeypatched; no real `gh` call.
+- `generate_svg()`: golden-file snapshots for light + dark, plus structural assertions (palette, dimensions, embedded font, no label clipping).
+
+What tests **do not** cover: whether the chart looks right. Visual review remains a human responsibility before merging changes that touch layout.
+
 ## Credits
 
 - **[star-history.com](https://www.star-history.com)**: original concept, xkcd sketch style, and the `xkcdify` SVG filter inspiration.

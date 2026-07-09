@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""mystarhistory — Generate a star-history SVG chart for any GitHub repo.
+"""mystarhistory: Generate a star-history SVG chart for any GitHub repo.
 
 Self-hosted alternative to star-history.com. Works after GitHub's 2026 API
 change that broke embedded star-history charts for non-owners.
 
 Usage:
-    python mystarhistory.py --repo carsteneu/ai-memory-comparison
-    python mystarhistory.py --repo owner/name --output chart.svg --color #dd4528
+    python3 mystarhistory.py --repo carsteneu/ai-memory-comparison
+    python3 mystarhistory.py --repo owner/name --output chart.svg --color dd4528
 
 Requires: Python 3 + gh CLI (authenticated as repo admin/collaborator).
 """
