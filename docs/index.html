@@ -14,7 +14,7 @@
 <link rel="canonical" href="https://my-star-history.com/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Handlee&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Handlee&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #1a1714;
@@ -22,10 +22,10 @@
     --paper-card: #fbf7ec;
     --red: #dd4528;
     --red-soft: rgba(221, 69, 40, 0.10);
-    --graphite: #5b554c;
-    --soft: #8a8275;
-    --rule: #ddd3bd;
-    --grid: #d8cdb4;
+      --graphite: #5b554c;
+      --soft: #756c5e;
+      --rule: #ddd3bd;
+      --grid: #d8cdb4;
     --tape: rgba(193, 178, 138, 0.42);
     --tape-edge: rgba(168, 154, 118, 0.55);
   }
@@ -35,10 +35,10 @@
       --paper: #1b1814;
       --paper-card: #221e19;
       --red-soft: rgba(221, 69, 40, 0.16);
-      --graphite: #b3a994;
-      --soft: #847b69;
-      --rule: #3a342c;
-      --grid: #332e26;
+        --graphite: #b3a994;
+        --soft: #9a9082;
+        --rule: #3a342c;
+        --grid: #443b2c;
       --tape: rgba(120, 108, 80, 0.30);
       --tape-edge: rgba(150, 136, 100, 0.45);
     }
@@ -63,8 +63,8 @@
   }
   ::selection { background: var(--red); color: #fff; }
   a { color: var(--red); text-decoration: none; }
-  a:hover { text-decoration: underline; text-decoration-style: wavy; text-underline-offset: 4px; }
-  a:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 2px; }
+  a:not(.cta):hover { text-decoration: underline; text-decoration-style: wavy; text-underline-offset: 4px; }
+  a:focus-visible, summary:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 2px; }
 
   /* ---------- hero ---------- */
   header { padding: 88px 0 40px; }
@@ -85,7 +85,6 @@
     letter-spacing: -0.01em;
     margin-bottom: 26px;
   }
-  header h1 .the { display: block; font-size: 0.42em; color: var(--soft); margin-bottom: 6px; letter-spacing: 0.04em; }
   header .tagline {
     font-size: 1.28em;
     line-height: 1.5;
@@ -154,7 +153,7 @@
     padding: 9px 22px 11px;
     display: inline-block;
     transition: transform 0.12s ease;
-    text-decoration: none !important;
+    text-decoration: none; /* override a:hover specificity */
   }
   .cta-primary {
     color: #fff;
@@ -255,33 +254,38 @@
   }
   .scribble::before { content: '↳ '; color: var(--red); }
 
-  /* code — taped-in paper card */
-  pre {
-    font-family: 'IBM Plex Mono', monospace;
-    background: var(--paper-card);
-    border: 1px solid var(--rule);
-    padding: 26px 24px 20px;
-    margin: 26px 0;
-    overflow-x: auto;
-    font-size: 0.86em;
-    line-height: 1.55;
-    color: var(--ink);
-    position: relative;
-    box-shadow:
-      0 14px 30px -20px rgba(26,23,20,0.30),
-      0 1px 0 var(--rule);
-    transform: rotate(-0.35deg);
-  }
-  pre::before {
-    content: '';
-    position: absolute;
-    top: -10px; left: 44%;
-    width: 72px; height: 18px;
-    transform: rotate(-3deg);
-    background: var(--tape);
-    border-left: 1px dashed var(--tape-edge);
-    border-right: 1px dashed var(--tape-edge);
-  }
+    /* code — taped-in paper card. tape lives on a non-scrolling wrapper
+       so overflow-x:auto on <pre> doesn't clip it (CSS spec: visible→auto). */
+    .code-card {
+      position: relative;
+      margin: 26px 0;
+      transform: rotate(-0.35deg);
+    }
+    .code-card::before {
+      content: '';
+      position: absolute;
+      top: -10px; left: 44%;
+      width: 72px; height: 18px;
+      transform: rotate(-3deg);
+      background: var(--tape);
+      border-left: 1px dashed var(--tape-edge);
+      border-right: 1px dashed var(--tape-edge);
+      z-index: 1;
+    }
+    .code-card pre {
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--paper-card);
+      border: 1px solid var(--rule);
+      padding: 26px 24px 20px;
+      margin: 0;
+      overflow-x: auto;
+      font-size: 0.86em;
+      line-height: 1.55;
+      color: var(--ink);
+      box-shadow:
+        0 14px 30px -20px rgba(26,23,20,0.30),
+        0 1px 0 var(--rule);
+    }
   pre code { font-family: inherit; background: none; white-space: pre; }
   code {
     font-family: 'IBM Plex Mono', monospace;
@@ -357,7 +361,8 @@
     header { padding: 56px 0 28px; }
     section { padding: 42px 0 14px; }
     .chart-frame { padding: 18px 14px 12px; background-size: 22px 22px; }
-    pre { padding: 22px 16px 16px; transform: rotate(-0.2deg); font-size: 0.78em; }
+      .code-card pre { padding: 22px 16px 16px; font-size: 0.78em; }
+      .code-card { transform: rotate(-0.2deg); }
     .cta { font-size: 1.08em; }
     .h2-underline { max-width: 260px; }
   }
@@ -366,12 +371,24 @@
     html { scroll-behavior: auto; }
   }
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Does this replace star-history.com?","acceptedAnswer":{"@type":"Answer","text":"It's a self-hosted alternative. star-history.com itself still works for repo owners who log in with their token, but the embedded chart badge for public visitors is broken since 2026. My Star History generates a static SVG that works for everyone, no login required on the viewer's side."}},
+{"@type":"Question","name":"Do I need a personal access token?","acceptedAnswer":{"@type":"Answer","text":"No. The default ${{ github.token }} injected into every GitHub Actions run is enough to read stargazers for the repo the workflow lives in. You only need a PAT if you want to chart a repo you don't own."}},
+{"@type":"Question","name":"Will it work with my branch protection rules?","acceptedAnswer":{"@type":"Answer","text":"Yes. The action pushes to a separate star-history orphan branch, not to main. Orphan branches are not subject to your main branch's protection rules. No bypass configuration, no PAT, no PR required."}},
+{"@type":"Question","name":"What if I already use GitHub Pages?","acceptedAnswer":{"@type":"Answer","text":"No conflict. The SVGs live on a separate branch, not in Pages. The README references them via raw.githubusercontent.com URLs, not via your Pages domain."}},
+{"@type":"Question","name":"Can I run this without GitHub Actions?","acceptedAnswer":{"@type":"Answer","text":"Yes. The CLI (mystarhistory.py) runs anywhere with Python 3 and the gh CLI. You can run it locally, in any CI system, or on a schedule via cron. The GitHub Action is just a convenience wrapper around the CLI."}},
+{"@type":"Question","name":"Does the chart update in real time?","acceptedAnswer":{"@type":"Answer","text":"No. The chart is a static snapshot from the moment the action runs. Schedule the workflow daily or weekly to keep it current. GitHub caches raw.githubusercontent.com responses for a few hours, so even after a commit the old chart may show briefly until the cache expires."}},
+{"@type":"Question","name":"Why the xkcd sketch style?","acceptedAnswer":{"@type":"Answer","text":"It's a nod to the original star-history.com aesthetic, which in turn was inspired by Randall Munroe's xkcd comics. The hand-drawn look uses an SVG feTurbulence + feDisplacementMap filter to wobble the lines slightly. If you prefer a cleaner look, the renderer is a single Python file you can modify."}},
+{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The tool is MIT-licensed open source. The GitHub Action is free to use. GitHub Actions minutes are free for public repos and included in your account for private repos (2000 minutes/month on the free tier — each run uses about 1 minute)."}}
+]}
+</script>
 </head>
 <body>
 
 <header>
   <span class="eyebrow">a notebook entry —</span>
-  <h1><span class="the">this is</span>My Star History</h1>
+  <h1>My Star History</h1>
   <p class="tagline">Self-hosted xkcd-style GitHub star-history charts. No token-sharing, no external service, no broken embeds.</p>
 
   <figure class="chart-fig">
@@ -475,14 +492,14 @@
 
   <h3>1. As a CLI tool</h3>
   <p>If you just want a one-off chart, run the Python script directly:</p>
-<pre><code>git clone https://github.com/carsteneu/mystarhistory.git
+<div class="code-card"><pre><code>git clone https://github.com/carsteneu/mystarhistory.git
 cd mystarhistory
-python3 mystarhistory.py --repo yourname/yourrepo</code></pre>
+python3 mystarhistory.py --repo yourname/yourrepo</code></pre></div>
   <p>Output: an SVG file you can commit to your repo and reference from your README.</p>
 
   <h3>2. As a GitHub Action (self-updating)</h3>
   <p>Add a workflow file to your repo and the chart updates itself on a schedule:</p>
-<pre><code># .github/workflows/star-history.yml
+<div class="code-card"><pre><code># .github/workflows/star-history.yml
 name: Star History
 on:
   schedule:
@@ -497,7 +514,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: carsteneu/mystarhistory@v1
         with:
-          repos: ${{ github.repository }}</code></pre>
+          repos: ${{ github.repository }}</code></pre></div>
   <p>The action pushes SVGs to a dedicated <code>star-history</code> branch — an orphan branch that does not pollute your main branch and works with branch protection.</p>
 </section>
 
@@ -529,10 +546,10 @@ jobs:
   <h2>Embed in your README</h2>
   <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q45,3 90,5 T180,7 T270,4 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <p>After the action runs, reference the SVGs with a <code>&lt;picture&gt;</code> block so the chart auto-switches between light and dark themes:</p>
-<pre><code>&lt;picture&gt;
+<div class="code-card"><pre><code>&lt;picture&gt;
   &lt;source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-dark.svg"&gt;
   &lt;img alt="Star history" src="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-light.svg"&gt;
-&lt;/picture&gt;</code></pre>
+&lt;/picture&gt;</code></pre></div>
   <p>Replace <code>OWNER/REPO</code> with your GitHub repo slug. The <code>star-history</code> branch is created automatically on the first run.</p>
 </section>
 
@@ -543,9 +560,9 @@ jobs:
   <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,5 Q40,2 80,6 T160,4 T240,7 T338,5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
 
   <h3>CLI</h3>
-<pre><code>git clone https://github.com/carsteneu/mystarhistory.git
+<div class="code-card"><pre><code>git clone https://github.com/carsteneu/mystarhistory.git
 cd mystarhistory
-python3 mystarhistory.py --repo yourname/yourrepo</code></pre>
+python3 mystarhistory.py --repo yourname/yourrepo</code></pre></div>
   <p>Requirements: Python 3.6+, <a href="https://cli.github.com/">gh CLI</a> authenticated via <code>gh auth login</code>.</p>
 
   <h3>Action</h3>
