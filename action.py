@@ -97,19 +97,25 @@ def clean_old_files(out_dir, themes, keep_filename=None):
 def build_picture_block(output_dir, light_file, dark_file):
     """Render the HTML block to embed between the README markers.
 
-    Uses <picture> when both themes are present, otherwise a plain <img>."""
+    Uses <picture> when both themes are present, otherwise a plain <img>.
+    A small attribution line is appended below the chart.
+    """
     rel = output_dir
+    attribution = (
+        f'<sub><a href="https://github.com/carsteneu/mystarhistory">made with mystarhistory</a></sub>'
+    )
     if light_file and dark_file:
         return (
             "<picture>\n"
             f'  <source media="(prefers-color-scheme: dark)" srcset="{rel}/{dark_file}">\n'
             f'  <img alt="Star history" src="{rel}/{light_file}">\n'
-            "</picture>"
+            f"</picture>\n"
+            f"{attribution}"
         )
     single = light_file or dark_file
     if not single:
         return ""
-    return f'<img alt="Star history" src="{rel}/{single}">'
+    return f'<img alt="Star history" src="{rel}/{single}">\n{attribution}'
 
 
 def update_readme(readme_path, block, marker=MARKER):
