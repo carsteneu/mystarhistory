@@ -1,5 +1,5 @@
 name: 'My Star History'
-description: 'Render a self-updating star-history chart and commit it into your README. Self-hosted, xkcd-style, works after GitHub 2026 stargazers API restriction.'
+description: 'Self-hosted xkcd-style star-history chart for your README. CLI or GitHub Action.'
 author: 'Carsten Euwens'
 branding:
   icon: 'star'
