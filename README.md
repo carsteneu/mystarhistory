@@ -1,0 +1,128 @@
+# mystarhistory
+
+Generate a star-history SVG chart for any GitHub repo — self-hosted, no external API, no token-sharing.
+
+[![Python](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## Why
+
+In 2026, GitHub [changed the stargazers API](https://github.blog/changelog) to restrict star-history data to repo admins and collaborators. The popular [star-history.com](https://www.star-history.com) embedded chart broke overnight — visitors started seeing "Your GitHub token is invalid or expired" instead of the chart.
+
+**mystarhistory** generates the SVG locally and commits it to the repo. No external service, no token in the browser, no rate-limited embed. The chart is just a static file.
+
+Inspired by [star-history/star-history](https://github.com/star-history/star-history) — the original xkcd-style star history chart. Built because the 2026 API change broke embedded charts for everyone except repo owners with tokens.
+
+## Features
+
+- **xkcd sketch style** — hand-drawn look via SVG `feTurbulence` + `feDisplacementMap` filter
+- **Handlee font embedded** (OFL, public domain) — consistent rendering everywhere, no external font load
+- **Single SVG output** — drop it in the repo, reference from README, done
+- **CLI-flexible** — `--repo`, `--color`, `--title`, `--output`, dimensions
+- **Zero dependencies** — only Python 3 stdlib + `gh` CLI
+- **15KB SVG** — small enough to commit
+
+## Requirements
+
+- Python 3.6+
+- [gh CLI](https://cli.github.com/) authenticated as repo admin/collaborator
+  (`gh auth login`)
+
+## Install
+
+```bash
+git clone https://github.com/carsteneu/mystarhistory.git
+cd mystarhistory
+```
+
+No `pip install` — just run the script directly.
+
+## Usage
+
+```bash
+# Generate for any repo you own
+python mystarhistory.py --repo yourname/yourrepo
+
+# Custom output location
+python mystarhistory.py --repo yourname/yourrepo --output docs/stars.svg
+
+# Custom color and title
+python mystarhistory.py --repo yourname/yourrepo --color #0066cc --title "Project Growth"
+
+# Larger chart
+python mystarhistory.py --repo yourname/yourrepo --width 1200 --height 800
+```
+
+Output:
+
+```
+Generated star-history.svg: 108 stars, May 30 – Jul 09
+```
+
+## Embed in README
+
+After generating the SVG, commit it and reference from your README:
+
+```markdown
+## Star History
+
+![Star History](star-history.svg)
+```
+
+Or as HTML for sizing control:
+
+```html
+<img src="star-history.svg" alt="Star History" width="800" />
+```
+
+## Automation (optional)
+
+To keep the chart current, set up a GitHub Action that regenerates it on a schedule:
+
+```yaml
+# .github/workflows/star-history.yml
+name: Update star history
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # weekly
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+      - run: echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+      - run: sudo apt update && sudo apt install gh -y
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python mystarhistory.py --repo ${{ github.repository }} --output star-history.svg
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update star history chart"
+```
+
+## Why not use star-history.com?
+
+Still works — for you. The website needs your personal token to fetch star data. Embedded charts (`api.star-history.com/chart?...`) are broken for public visitors because GitHub now limits the stargazers endpoint to repo admins.
+
+mystarhistory generates a static SVG file that's:
+- **visible to everyone** — no token in the visitor's browser
+- **rate-limit-proof** — no live API calls per page load
+- **offline-friendly** — works in static hosts, GitHub Pages, mirrors
+
+## Credits
+
+- **[star-history.com](https://www.star-history.com)** — original concept, xkcd sketch style, and the `xkcdify` SVG filter inspiration
+- **[Handlee font](https://fonts.google.com/specimen/Handlee)** by Jonnie Hallman — OFL 1.1 (public domain equivalent)
+- **[xkcd](https://xkcd.com)** by Randall Munroe — the sketch aesthetic that started it all
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+Handlee font (in `handlee-subset.woff2`) is licensed under the SIL Open Font License 1.1, which allows free use, modification, and redistribution. See [HANDLEE-LICENSE](HANDLEE-LICENSE).
