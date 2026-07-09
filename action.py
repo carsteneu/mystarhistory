@@ -115,7 +115,11 @@ def build_picture_block(output_dir, light_file, dark_file):
 def update_readme(readme_path, block, marker=MARKER):
     """Replace content between marker comments. Returns True if updated.
 
-    No-op (returns False) if: file missing, markers absent, or block empty.
+    Only matches marker pairs whose current content is either empty
+    (whitespace only) or an existing action-written block (<picture> or
+    <img alt="Star history">). This prevents the action from clobbering
+    documentation that quotes the markers as examples — doc authors must
+    put some other content between the markers so the regex skips them.
     """
     if not block:
         return False
@@ -124,7 +128,15 @@ def update_readme(readme_path, block, marker=MARKER):
     content = readme_path.read_text()
     start = f"<!-- {marker}:start -->"
     end = f"<!-- {marker}:end -->"
-    pattern = re.compile(re.escape(start) + r".*?" + re.escape(end), re.DOTALL)
+    # Inner content: whitespace-only, OR an existing action block.
+    # The action block alternatives are kept tight to avoid matching
+    # arbitrary HTML the user might have placed between the markers.
+    inner = (
+        r"\s*"
+        r"|"
+        r"\s*(?:<picture>.*?</picture>|<img[^>]*alt=\"Star history\"[^>]*>)\s*"
+    )
+    pattern = re.compile(re.escape(start) + inner + re.escape(end), re.DOTALL)
     if not pattern.search(content):
         return False
     new_content = pattern.sub(f"{start}\n{block}\n{end}", content)

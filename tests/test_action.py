@@ -91,7 +91,7 @@ README_TEMPLATE = (
     "# Project\n\n"
     "Some intro.\n\n"
     "<!-- my-star-history:start -->\n"
-    "old content\n"
+    '<img alt="Star history" src="old.svg">\n'
     "<!-- my-star-history:end -->\n\n"
     "Trailing.\n"
 )
@@ -108,7 +108,7 @@ def test_update_readme_replaces_block(tmp_path):
     content = readme.read_text()
     assert "<!-- my-star-history:start -->" in content
     assert "<!-- my-star-history:end -->" in content
-    assert "old content" not in content
+    assert "old.svg" not in content
     assert block in content
     # Markers preserved, content between them replaced
     assert "<!-- my-star-history:start -->\n" + block + "\n<!-- my-star-history:end -->" in content
@@ -135,7 +135,7 @@ def test_update_readme_empty_block_no_op(tmp_path):
     readme.write_text(README_TEMPLATE)
     result = action.update_readme(readme, "")
     assert result is False
-    assert "old content" in readme.read_text()
+    assert "old.svg" in readme.read_text()
 
 
 def test_update_readme_multiline_block(tmp_path):
@@ -164,6 +164,113 @@ def test_update_readme_handles_empty_marker_block(tmp_path):
     assert result is True
     new = readme.read_text()
     assert block in new
+
+
+def test_update_readme_skips_marker_pairs_with_documentation_content(tmp_path):
+    """Regression: markers shown in documentation (code samples, prose) must
+    NOT be replaced by the action. The regex should only match marker pairs
+    whose content is either empty/whitespace or a previously-written action
+    block (<picture> or <img alt="Star history">).
+
+    Documentation that quotes the markers must put some non-empty,
+    non-action-block content between them so the regex skips the pair.
+    Previously the lazy '.*?' matched the first start..end pair anywhere in
+    the file, clobbering documentation that quoted the markers as examples.
+    """
+    content = (
+        "# Project\n\n"
+        "## Setup\n\n"
+        "Add these markers:\n\n"
+        "```html\n"
+        "<!-- my-star-history:start -->\n"
+        "<!-- your chart will appear here -->\n"
+        "<!-- my-star-history:end -->\n"
+        "```\n\n"
+        "## Star History\n\n"
+        "<!-- my-star-history:start -->\n"
+        "<!-- my-star-history:end -->\n"
+    )
+    readme = tmp_path / "README.md"
+    readme.write_text(content)
+    block = "<picture>\n  <img alt=\"Star history\" src=\"a.svg\">\n</picture>"
+
+    result = action.update_readme(readme, block)
+
+    assert result is True
+    new = readme.read_text()
+    # The documentation comment inside the doc markers must survive
+    assert "<!-- your chart will appear here -->" in new
+    # The real block must be replaced
+    assert "<picture>" in new
+    assert 'src="a.svg"' in new
+
+
+def test_update_readme_skips_doc_marker_pair_with_descriptive_text(tmp_path):
+    """Same regression, different shape: markers quoted inline in prose.
+
+    'The block between <!-- my-star-history:start --> and <!-- my-star-history:end -->'
+    must not be replaced even though start and end markers appear in sequence.
+    """
+    content = (
+        "# Project\n\n"
+        "The block between <!-- my-star-history:start --> these words "
+        "<!-- my-star-history:end --> is rewritten.\n\n"
+        "## Star History\n\n"
+        "<!-- my-star-history:start -->\n"
+        "<!-- my-star-history:end -->\n"
+    )
+    readme = tmp_path / "README.md"
+    readme.write_text(content)
+    block = "<picture>\n  <img alt=\"Star history\" src=\"a.svg\">\n</picture>"
+
+    result = action.update_readme(readme, block)
+    assert result is True
+    new = readme.read_text()
+    # Prose between doc markers preserved
+    assert "these words" in new
+    # Real block replaced
+    assert "<picture>" in new
+
+
+def test_update_readme_replaces_existing_picture_block(tmp_path):
+    """Idempotent re-run: an existing <picture> block between markers must
+    be replaceable so the action can refresh the chart."""
+    content = (
+        "# Project\n\n"
+        "<!-- my-star-history:start -->\n"
+        "<picture>\n"
+        "  <img alt=\"Star history\" src=\"old.svg\">\n"
+        "</picture>\n"
+        "<!-- my-star-history:end -->\n"
+    )
+    readme = tmp_path / "README.md"
+    readme.write_text(content)
+    block = "<picture>\n  <img alt=\"Star history\" src=\"new.svg\">\n</picture>"
+
+    result = action.update_readme(readme, block)
+    assert result is True
+    new = readme.read_text()
+    assert "new.svg" in new
+    assert "old.svg" not in new
+
+
+def test_update_readme_replaces_existing_img_block(tmp_path):
+    """Same idempotency for plain <img alt="Star history"> blocks."""
+    content = (
+        "# Project\n\n"
+        "<!-- my-star-history:start -->\n"
+        '<img alt="Star history" src="old.svg">\n'
+        "<!-- my-star-history:end -->\n"
+    )
+    readme = tmp_path / "README.md"
+    readme.write_text(content)
+    block = '<img alt="Star history" src="new.svg">'
+
+    result = action.update_readme(readme, block)
+    assert result is True
+    new = readme.read_text()
+    assert "new.svg" in new
+    assert "old.svg" not in new
 
 
 # --- clean_old_files --------------------------------------------------------
