@@ -4,6 +4,7 @@ Generate a star-history SVG chart for any GitHub repo. Self-hosted, no external 
 
 [![Python](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Built with Claude](https://img.shields.io/badge/built%20with-Claude-blueviolet.svg)](https://claude.ai)
 
 ## Example
 
