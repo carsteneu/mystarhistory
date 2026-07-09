@@ -99,34 +99,68 @@ Or as HTML for sizing control:
 
 ## Automation (optional)
 
-To keep the chart current, set up a GitHub Action that regenerates it on a schedule:
+To keep the chart current, set up a GitHub Action that regenerates it on a schedule. The workflow clones `mystarhistory` fresh on each run, so you don't need to vendor anything into your repo:
 
 ```yaml
 # .github/workflows/star-history.yml
 name: Update star history
 on:
   schedule:
-    - cron: '0 0 * * 0'  # weekly
+    - cron: '0 6 * * *'  # daily 06:00 UTC
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - run: curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-      - run: echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-      - run: sudo apt update && sudo apt install gh -y
-      - env:
+
+      - name: Install gh CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update && sudo apt install gh -y
+
+      - name: Clone mystarhistory
+        run: git clone --depth 1 https://github.com/carsteneu/mystarhistory.git /tmp/mystarhistory
+
+      - name: Generate charts (light + dark)
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 mystarhistory.py --repo ${{ github.repository }} --output star-history.svg
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Update star history chart"
+        run: |
+          python /tmp/mystarhistory/mystarhistory.py --repo ${{ github.repository }} --output star-history.svg --color "#dd4528"
+          python /tmp/mystarhistory/mystarhistory.py --repo ${{ github.repository }} --output star-history-dark.svg --color "#dd4528" --dark
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet star-history.svg star-history-dark.svg; then
+            echo "No changes, skipping commit"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add star-history.svg star-history-dark.svg
+            git commit -m "chore: update star history chart [skip ci]"
+            git push
+          fi
 ```
+
+Then in your README:
+
+```html
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="star-history-dark.svg">
+  <img src="star-history.svg" alt="Star History">
+</picture>
+```
+
+Drop the `--dark` flag and the `star-history-dark.svg` line if you only want a light chart.
 
 ## Why not use star-history.com?
 
