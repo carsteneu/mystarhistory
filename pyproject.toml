@@ -1,0 +1,40 @@
+[project]
+name = "mystarhistory"
+version = "1.0.0"
+description = "Generate a star-history SVG chart for any GitHub repo. Self-hosted, no external API."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.6"
+authors = [{ name = "carsteneu" }]
+keywords = ["github", "star-history", "svg", "chart", "xkcd"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Multimedia :: Graphics :: Presentation",
+]
+
+[project.scripts]
+mystarhistory = "mystarhistory:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pytest-cov>=4"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["."]
+
+[tool.coverage.run]
+source = ["mystarhistory"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "sys\\.exit\\(",
+]
