@@ -117,7 +117,7 @@ Then add a `<picture>` block to your README pointing at the `star-history` branc
 
 ```html
 <picture>
-  <source media="(prefers-color-scheme: dark)" src="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-dark.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-dark.svg">
   <img alt="Star history" src="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-light.svg">
 </picture>
 ```
@@ -284,7 +284,7 @@ What tests **do not** cover: whether the chart looks right. Visual review remain
 This repo's own star history, updated daily by the [GitHub Action](#as-a-github-action) shipped in this repo (eating our own dog food):
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" src="https://raw.githubusercontent.com/carsteneu/mystarhistory/star-history/assets/my-star-history/star-history-dark.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/carsteneu/mystarhistory/star-history/assets/my-star-history/star-history-dark.svg">
   <img alt="Star history" src="https://raw.githubusercontent.com/carsteneu/mystarhistory/star-history/assets/my-star-history/star-history-light.svg">
 </picture>
 
