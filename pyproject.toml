@@ -1,19 +1,21 @@
 [project]
 name = "mystarhistory"
-version = "1.0.0"
+version = "1.1.0"
 description = "Generate a star-history SVG chart for any GitHub repo. Self-hosted, no external API."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.6"
-authors = [{ name = "carsteneu" }]
+authors = [{ name = "Carsten Euwens" }]
 keywords = ["github", "star-history", "svg", "chart", "xkcd"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Multimedia :: Graphics :: Presentation",
 ]
+
+[tool.setuptools]
+py-modules = ["mystarhistory"]
 
 [project.scripts]
 mystarhistory = "mystarhistory:main"
