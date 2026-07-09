@@ -121,18 +121,9 @@ jobs:
           repos: ${{ github.repository }}
 ```
 
-Then add these two marker comments to your README where the chart should appear:
+Then add two HTML comment markers where the chart should appear. The opening comment contains `my-star-history:start`, the closing one `my-star-history:end`. Leave the lines between them empty — see the [Star History](#star-history) section below for a working example.
 
-```html
-<!-- my-star-history:start -->
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/my-star-history/star-history-dark-20260709132513.svg">
-  <img alt="Star history" src="assets/my-star-history/star-history-light-20260709132513.svg">
-</picture>
-<!-- my-star-history:end -->
-```
-
-Leave them empty. On each run the action fills the space between them with a `<picture>` block that auto-switches on GitHub's light/dark theme.
+On each run the action fills the space between them with a `<picture>` block that auto-switches on GitHub's light/dark theme.
 
 ### Inputs
 
@@ -160,12 +151,7 @@ Leave them empty. On each run the action fills the space between them with a `<p
 - The action runs in a Docker image (Python 3 + `gh` CLI + `git`).
 - It calls the same `mystarhistory.py` renderer this repo ships, so CLI and action output are identical.
 - SVGs are written as `star-history-{theme}-{YYYYmmddHHMMSS}.svg` to cache-bust GitHub's image CDN. Old timestamped files are pruned each run so the repo does not accumulate them.
-- The README block between `<!-- my-star-history:start -->
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/my-star-history/star-history-dark-20260709132513.svg">
-  <img alt="Star history" src="assets/my-star-history/star-history-light-20260709132513.svg">
-</picture>
-<!-- my-star-history:end -->` is rewritten in place with a `<picture>` element for theme auto-switching.
+- The README block between the `&lt;!-- my-star-history:start --&gt;` and `&lt;!-- my-star-history:end --&gt;` markers is rewritten in place with a `<picture>` element for theme auto-switching.
 - The default `${{ github.token }}` is enough to read stargazers for the repo the workflow lives in. For charting other repos, pass a classic PAT with `public_repo` scope (or a fine-grained read token) via `token:`.
 
 ## Automation (optional)
