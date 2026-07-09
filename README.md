@@ -269,6 +269,13 @@ git add tests/golden/
 
 What tests **do not** cover: whether the chart looks right. Visual review remains a human responsibility before merging changes that touch layout.
 
+## Star History
+
+This repo's own star history, updated daily by the [GitHub Action](#as-a-github-action) shipped in this repo (eating our own dog food):
+
+<!-- my-star-history:start -->
+<!-- my-star-history:end -->
+
 ## Credits
 
 - **[star-history.com](https://www.star-history.com)**: original concept, xkcd sketch style, and the `xkcdify` SVG filter inspiration.
