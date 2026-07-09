@@ -270,8 +270,8 @@ This repo's own star history, updated daily by the [GitHub Action](#as-a-github-
 
 <!-- my-star-history:start -->
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/my-star-history/star-history-dark-20260709132513.svg">
-  <img alt="Star history" src="assets/my-star-history/star-history-light-20260709132513.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/my-star-history/star-history-dark-20260709141109.svg">
+  <img alt="Star history" src="assets/my-star-history/star-history-light-20260709141109.svg">
 </picture>
 <!-- my-star-history:end -->
 
