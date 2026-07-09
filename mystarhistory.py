@@ -87,7 +87,7 @@ def text_el(x, y, content, font_family, size=16, weight='bold', fill='#000', anc
     return f'<text {" ".join(attrs)}>{content}</text>'
 
 
-def generate_svg(repo, dates, output, color, title, width=800, height=533):
+def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=False):
     """Render the star history SVG."""
     cum_data = build_cumulative(dates)
     if not cum_data:
@@ -124,7 +124,22 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533):
 
     FF = "Handlee, cursive"
     XKCD = ' filter="url(#xkcdify)"'
-    AXIS_COLOR = "#222"
+    if dark:
+        BG = "#0d1117"
+        FG = "#e6edf3"
+        AXIS_COLOR = "#30363d"
+        GRID_COLOR = "#21262d"
+        LEGEND_BG = "#161b22"
+        LEGEND_BORDER = "#30363d"
+        DOT_STROKE = "#0d1117"
+    else:
+        BG = "#fff"
+        FG = "#000"
+        AXIS_COLOR = "#222"
+        GRID_COLOR = "#eee"
+        LEGEND_BG = "#fff"
+        LEGEND_BORDER = "#000"
+        DOT_STROKE = "#fff"
 
     # Legend (flexible width based on repo name length)
     char_w = 7.5
@@ -139,10 +154,10 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533):
 
     legend = (
         f'<rect width="{legend_w:.0f}" height="{legend_h}" x="{legend_x}" y="{legend_y}" '
-        f'fill="#fff" fill-opacity="0.9" stroke="#000" stroke-width="1.5" rx="4" ry="4"{XKCD}/>'
+        f'fill="{LEGEND_BG}" fill-opacity="0.9" stroke="{LEGEND_BORDER}" stroke-width="1.5" rx="4" ry="4"{XKCD}/>'
         f'<rect width="{swatch}" height="{swatch}" x="{legend_x + legend_pad}" y="{legend_y + 12}" '
         f'rx="2" ry="2" fill="{color}"{XKCD}/>'
-        + text_el(legend_x + legend_pad + swatch + swatch_gap, legend_y + 20, repo, FF, size=15)
+        + text_el(legend_x + legend_pad + swatch + swatch_gap, legend_y + 20, repo, FF, size=15, fill=FG)
     )
 
     # Y-axis
@@ -152,11 +167,11 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533):
         if i > 0:
             y_elements.append(
                 f'<line x1="{pad_l}" y1="{y_val:.1f}" x2="{w - pad_r}" y2="{y_val:.1f}" '
-                f'stroke="#eee" stroke-width="1"{XKCD}/>'
+                f'stroke="{GRID_COLOR}" stroke-width="1"{XKCD}/>'
             )
-        y_elements.append(text_el(pad_l - 29, y_val + 5, fmt(i), FF))
+        y_elements.append(text_el(pad_l - 29, y_val + 5, fmt(i), FF, fill=FG))
 
-    y_elements.append(text_el(6, pad_t + plot_h/2, 'GitHub Stars', FF, size=17,
+    y_elements.append(text_el(6, pad_t + plot_h/2, 'GitHub Stars', FF, size=17, fill=FG,
                               transform=f'rotate(-90, 6, {pad_t + plot_h/2:.1f})'))
 
     # X-axis (unique months)
@@ -173,8 +188,8 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533):
     x_labels = []
     for i, (x, dt) in enumerate(month_positions):
         cx = (x + month_positions[i+1][0]) / 2 if i < len(month_positions) - 1 else (x + (w - pad_r)) / 2
-        x_labels.append(text_el(f'{cx:.1f}', pad_t + plot_h + 25, dt.strftime('%b %Y'), FF))
-    x_labels.append(text_el('50%', h - 8, 'Date', FF, size=17))
+        x_labels.append(text_el(f'{cx:.1f}', pad_t + plot_h + 25, dt.strftime('%b %Y'), FF, fill=FG))
+    x_labels.append(text_el('50%', h - 8, 'Date', FF, size=17, fill=FG))
 
     # End label (star count)
     last_x, last_y = points[-1]
@@ -195,15 +210,15 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533):
         f'      <stop offset="100%" stop-color="{color}" stop-opacity="0.02"/>',
         '    </linearGradient>',
         '  </defs>',
-        f'  <rect width="{w}" height="{h}" fill="#fff"/>',
-        text_el('50%', 30, title, FF, size=20, anchor='middle'),
+        f'  <rect width="{w}" height="{h}" fill="{BG}"/>',
+        text_el('50%', 30, title, FF, size=20, anchor='middle', fill=FG),
         '  ' + legend,
     ] + ['  ' + el for el in y_elements] + ['  ' + el for el in x_labels] + [
         f'  <line x1="{pad_l}" y1="{pad_t}" x2="{pad_l}" y2="{pad_t + plot_h}" stroke="{AXIS_COLOR}" stroke-width="2.5"{XKCD}/>',
         f'  <line x1="{pad_l}" y1="{pad_t + plot_h}" x2="{w - pad_r}" y2="{pad_t + plot_h}" stroke="{AXIS_COLOR}" stroke-width="2.5"{XKCD}/>',
         f'  <path d="{area_path}" fill="url(#g)"/>',
         f'  <path d="{line_path}" fill="none" stroke="{color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"{XKCD}/>',
-        f'  <circle cx="{last_x:.1f}" cy="{last_y:.1f}" r="5" fill="{color}" stroke="#fff" stroke-width="2"{XKCD}/>',
+        f'  <circle cx="{last_x:.1f}" cy="{last_y:.1f}" r="5" fill="{color}" stroke="{DOT_STROKE}" stroke-width="2"{XKCD}/>',
         text_el(f'{label_x:.1f}', f'{label_y:.1f}', max_stars, FF, size=18, fill=color),
         '</svg>'
     ]
@@ -232,6 +247,7 @@ Examples:
   %(prog)s --repo carsteneu/ai-memory-comparison
   %(prog)s --repo owner/name --output chart.svg
   %(prog)s --repo owner/name --color #0066cc --title "My Project Stars"
+  %(prog)s --repo owner/name --dark
 
 Embed in README.md:
   ![Star History](star-history.svg)
@@ -250,6 +266,7 @@ repo admin/collaborator access. Run as the repo owner with `gh auth login`.
                         help='Chart title (default: "Star History")')
     parser.add_argument('--width', type=int, default=800, help='Chart width in px (default: 800)')
     parser.add_argument('--height', type=int, default=533, help='Chart height in px (default: 533)')
+    parser.add_argument('--dark', action='store_true', help='Use dark theme (GitHub-dark-like palette)')
 
     args = parser.parse_args()
 
@@ -265,7 +282,7 @@ repo admin/collaborator access. Run as the repo owner with `gh auth login`.
         sys.exit(1)
 
     generate_svg(args.repo, dates, args.output, args.color, args.title,
-                 args.width, args.height)
+                 args.width, args.height, dark=args.dark)
 
 
 if __name__ == '__main__':
