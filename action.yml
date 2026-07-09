@@ -17,14 +17,6 @@ inputs:
     description: 'Where to write the generated SVGs (relative to repo root).'
     required: false
     default: 'assets/my-star-history'
-  readme:
-    description: 'README file path to update between markers.'
-    required: false
-    default: 'README.md'
-  update-readme:
-    description: 'Whether to rewrite the README block between the my-star-history markers.'
-    required: false
-    default: 'true'
   commit:
     description: 'Whether to git-add, commit, and push the generated files.'
     required: false
@@ -50,10 +42,6 @@ outputs:
     description: '"true" if a new chart was generated and committed, "false" otherwise.'
   files:
     description: 'Newline-separated list of generated SVG paths.'
-  light:
-    description: 'Path of the newest light SVG, or empty.'
-  dark:
-    description: 'Path of the newest dark SVG, or empty.'
 runs:
   using: 'docker'
   image: 'Dockerfile'
