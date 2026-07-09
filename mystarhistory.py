@@ -220,6 +220,7 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=
         f'  <path d="{line_path}" fill="none" stroke="{color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"{XKCD}/>',
         f'  <circle cx="{last_x:.1f}" cy="{last_y:.1f}" r="5" fill="{color}" stroke="{DOT_STROKE}" stroke-width="2"{XKCD}/>',
         text_el(f'{label_x:.1f}', f'{label_y:.1f}', max_stars, FF, size=18, fill=color),
+        f'  <a href="https://github.com/carsteneu/mystarhistory" target="_blank" rel="noopener"><text x="{w - pad_r - 2}" y="{h - 6}" font-size="10" font-family="Handlee, cursive" fill="{FG}" fill-opacity="0.4" text-anchor="end">made with mystarhistory</text></a>',
         '</svg>'
     ]
 
