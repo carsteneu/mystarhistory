@@ -70,13 +70,15 @@ def prepare_orphan_branch(workspace, branch, github_token):
     subprocess.run(["git", "remote", "add", "origin", authed_url],
                    check=True, cwd=tmp)
 
-    # Check if branch exists remotely
-    ls = subprocess.run(
-        ["git", "ls-remote", "--heads", "origin", branch],
+    # Check if branch exists remotely by trying to fetch it.
+    # ls-remote can return non-empty output even when the ref is not
+    # fetchable (e.g. stale caches, tag/branch name collisions), so
+    # we use fetch itself as the source of truth.
+    fetch = subprocess.run(
+        ["git", "fetch", "origin", branch],
         capture_output=True, text=True, cwd=tmp,
     )
-    if ls.stdout.strip():
-        subprocess.run(["git", "fetch", "origin", branch], check=True, cwd=tmp)
+    if fetch.returncode == 0:
         subprocess.run(["git", "checkout", branch], check=True, cwd=tmp)
 
     subprocess.run(["git", "config", "user.email",
