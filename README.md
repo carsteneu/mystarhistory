@@ -74,27 +74,19 @@ Generated star-history.svg: 108 stars, May 30 – Jul 09
 
 ## Embed in README
 
-After generating the SVG, commit it and reference from your README:
+After generating the SVG, commit it and reference it with a single line:
 
 ```markdown
-## Star History
-
 ![Star History](star-history.svg)
 ```
 
-For GitHub theme auto-switching, generate both a light and a dark SVG, then use the `<picture>` element:
+For GitHub theme auto-switching (light + dark), use the `<picture>` element:
 
 ```html
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="star-history-dark.svg">
   <img src="star-history.svg" alt="Star History">
 </picture>
-```
-
-Or as HTML for sizing control:
-
-```html
-<img src="star-history.svg" alt="Star History" width="800" />
 ```
 
 ## As a GitHub Action
