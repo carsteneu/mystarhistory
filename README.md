@@ -149,6 +149,13 @@ The action writes `star-history-light.svg` and `star-history-dark.svg` to the ou
 - SVGs are written as `star-history-{theme}.svg` (fixed filenames) to the output directory.
 - The default `${{ github.token }}` is enough to read stargazers for the repo the workflow lives in. For charting other repos, pass a classic PAT with `public_repo` scope (or a fine-grained read token) via `token:`.
 
+### Branch protection
+
+If your `main` branch is protected (require PR, no direct pushes), the action's `git push` will fail. Two options:
+
+1. **Allow the bot to bypass**: Repo Settings → Branches → `main` rule → "Allow specified actors to bypass required pull requests" → add `github-actions[bot]`.
+2. **Push to a different branch**: set a different output branch or disable `commit` and use a separate step with [peter-evans/create-pull-request](https://github.com/peter-evans/create-pull-request) to open a PR with the chart.
+
 ## Automation (optional)
 
 To keep the chart current, set up a GitHub Action that regenerates it on a schedule. The workflow clones `mystarhistory` fresh on each run, so you don't need to vendor anything into your repo:
