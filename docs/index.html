@@ -12,225 +12,378 @@
 <meta property="og:url" content="https://my-star-history.com/">
 <meta property="og:image" content="https://raw.githubusercontent.com/carsteneu/ai-memory-comparison/main/star-history.svg">
 <link rel="canonical" href="https://my-star-history.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Handlee&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #fdfdfc;
-  --fg: #16202b;
-  --fg2: #3d4753;
-  --muted: #5c6670;
-  --soft: #8b949e;
-  --accent: #dd4528;
-  --accent-soft: rgba(221, 69, 40, 0.07);
-  --card: #ffffff;
-  --code-bg: #f6f8fa;
-  --border: #e7eaee;
-  --shadow-sm: 0 1px 2px rgba(20, 24, 33, 0.04), 0 2px 8px rgba(20, 24, 33, 0.04);
-  --shadow-lg: 0 4px 12px rgba(20, 24, 33, 0.05), 0 24px 60px -12px rgba(20, 24, 33, 0.14);
-}
-@media (prefers-color-scheme: dark) {
   :root {
-    --bg: #101317;
-    --fg: #e8ecf1;
-    --fg2: #b8c2cc;
-    --muted: #9aa4af;
-    --soft: #7d8590;
-    --accent-soft: rgba(221, 69, 40, 0.12);
-    --card: #171b21;
-    --code-bg: #161b22;
-    --border: #262c34;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 24px 60px -12px rgba(0, 0, 0, 0.5);
+    --ink: #1a1714;
+    --paper: #f6f1e6;
+    --paper-card: #fbf7ec;
+    --red: #dd4528;
+    --red-soft: rgba(221, 69, 40, 0.10);
+    --graphite: #5b554c;
+    --soft: #8a8275;
+    --rule: #ddd3bd;
+    --grid: #d8cdb4;
+    --tape: rgba(193, 178, 138, 0.42);
+    --tape-edge: rgba(168, 154, 118, 0.55);
   }
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-  line-height: 1.7;
-  color: var(--fg);
-  background:
-    radial-gradient(1100px 520px at 50% -140px, var(--accent-soft), transparent 70%),
-    var(--bg);
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 24px;
-  -webkit-font-smoothing: antialiased;
-}
-::selection { background: var(--accent); color: #fff; }
-a:focus-visible, summary:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
-header { padding: 104px 0 56px; text-align: center; }
-header h1 {
-  font-size: clamp(2.6em, 7vw, 4em);
-  font-weight: 800;
-  margin-bottom: 20px;
-  letter-spacing: -0.035em;
-  line-height: 1.08;
-}
-header h1 .accent { color: var(--accent); }
-header .tagline {
-  font-size: 1.3em;
-  color: var(--muted);
-  margin: 0 auto 36px;
-  max-width: 44rem;
-}
-header .cta {
-  display: inline-flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-header .cta a {
-  display: inline-block;
-  padding: 13px 28px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.05em;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-header .cta a:hover { transform: translateY(-2px); }
-header .cta .primary {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 8px 24px -6px rgba(221, 69, 40, 0.45);
-}
-header .cta .primary:hover { box-shadow: 0 14px 32px -6px rgba(221, 69, 40, 0.5); }
-header .cta .secondary {
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: var(--fg);
-  box-shadow: var(--shadow-sm);
-}
-header .cta .secondary:hover { border-color: var(--soft); }
-section { padding: 56px 0; border-top: 1px solid var(--border); }
-.hero-shot {
-  margin: 56px auto 0;
-  max-width: 860px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: var(--shadow-lg);
-}
-.hero-shot img { width: 100%; height: auto; display: block; border-radius: 8px; }
-section.split {
-  display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 56px;
-  align-items: center;
-}
-section.split.rev { grid-template-columns: 2fr 3fr; }
-section.split.rev .illu { order: -1; }
-.illu img { width: 100%; height: auto; display: block; }
-@media (max-width: 760px) {
-  section.split, section.split.rev { grid-template-columns: 1fr; gap: 28px; }
-  section.split.rev .illu { order: 0; }
-  .illu { max-width: 320px; margin: 0 auto; }
-}
-section h2 {
-  font-size: 1.9em;
-  margin-bottom: 20px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-section h3 {
-  font-size: 1.2em;
-  margin: 28px 0 12px;
-  font-weight: 600;
-}
-section p { margin-bottom: 16px; color: var(--fg2); }
-section ul, section ol { margin: 0 0 16px 26px; color: var(--fg2); }
-section li { margin-bottom: 10px; }
-section li::marker { color: var(--accent); }
-section a { color: var(--accent); text-decoration: none; }
-section a:hover { text-decoration: underline; }
-.chart-demo {
-  width: 100%;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 10px;
-  overflow: hidden;
-  margin: 40px 0;
-  box-shadow: var(--shadow-lg);
-}
-.chart-demo img { width: 100%; display: block; border-radius: 8px; }
-code {
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-  background: var(--code-bg);
-  border: 1px solid var(--border);
-  padding: 2px 6px;
-  border-radius: 6px;
-  font-size: 0.88em;
-}
-pre {
-  background: var(--code-bg);
-  padding: 20px;
-  border-radius: 12px;
-  overflow-x: auto;
-  margin: 20px 0;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
-}
-pre code { background: none; border: none; padding: 0; font-size: 0.9em; }
-.badges { text-align: center; margin: 28px 0 8px; }
-.badges img { display: inline-block; margin: 0 3px; vertical-align: middle; border-radius: 3px; }
-.faq details {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px 20px;
-  margin-bottom: 12px;
-  box-shadow: var(--shadow-sm);
-  transition: border-color 0.15s ease;
-}
-.faq details:hover { border-color: var(--soft); }
-.faq details[open] { border-color: rgba(221, 69, 40, 0.4); }
-.faq summary {
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 1.05em;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-.faq summary::-webkit-details-marker { display: none; }
-.faq summary::after {
-  content: '+';
-  color: var(--soft);
-  font-size: 1.3em;
-  font-weight: 400;
-  line-height: 1;
-  flex-shrink: 0;
-  transition: transform 0.15s ease;
-}
-.faq details[open] summary::after { transform: rotate(45deg); color: var(--accent); }
-.faq details[open] summary { margin-bottom: 12px; }
-footer {
-  text-align: center;
-  padding: 56px 0 64px;
-  color: var(--muted);
-  border-top: 1px solid var(--border);
-  font-size: 0.95em;
-}
-footer a { color: var(--accent); text-decoration: none; }
-footer a:hover { text-decoration: underline; }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #e8e0cf;
+      --paper: #1b1814;
+      --paper-card: #221e19;
+      --red-soft: rgba(221, 69, 40, 0.16);
+      --graphite: #b3a994;
+      --soft: #847b69;
+      --rule: #3a342c;
+      --grid: #332e26;
+      --tape: rgba(120, 108, 80, 0.30);
+      --tape-edge: rgba(150, 136, 100, 0.45);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 19px;
+    line-height: 1.65;
+    color: var(--graphite);
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(900px 480px at 12% -6%, rgba(221,69,40,0.05), transparent 60%),
+      radial-gradient(760px 520px at 96% 4%, rgba(180,150,90,0.06), transparent 55%);
+    background-attachment: fixed;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 32px 0;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--red); color: #fff; }
+  a { color: var(--red); text-decoration: none; }
+  a:hover { text-decoration: underline; text-decoration-style: wavy; text-underline-offset: 4px; }
+  a:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 2px; }
+
+  /* ---------- hero ---------- */
+  header { padding: 88px 0 40px; }
+  .eyebrow {
+    font-family: 'Handlee', cursive;
+    color: var(--red);
+    font-size: 1.15em;
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+    display: inline-block;
+  }
+  header h1 {
+    font-family: 'Handlee', cursive;
+    font-size: clamp(3.2em, 11vw, 6.2em);
+    line-height: 0.92;
+    color: var(--ink);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin-bottom: 26px;
+  }
+  header h1 .the { display: block; font-size: 0.42em; color: var(--soft); margin-bottom: 6px; letter-spacing: 0.04em; }
+  header .tagline {
+    font-size: 1.28em;
+    line-height: 1.5;
+    color: var(--graphite);
+    max-width: 38rem;
+    margin-bottom: 36px;
+    font-style: italic;
+  }
+
+  /* chart figure — fig.1 on graph paper */
+  .chart-fig { margin: 8px 0 36px; }
+  .chart-frame {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    padding: 26px 26px 18px;
+    box-shadow:
+      0 1px 0 var(--rule),
+      0 18px 40px -22px rgba(26,23,20,0.28),
+      inset 0 0 0 1px rgba(255,255,255,0.3);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -1px -1px;
+    position: relative;
+  }
+  .chart-frame::before {
+    content: '';
+    position: absolute;
+    top: -12px; left: 50%;
+    width: 96px; height: 20px;
+    transform: translateX(-50%) rotate(-2.4deg);
+    background: var(--tape);
+    border-left: 1px dashed var(--tape-edge);
+    border-right: 1px dashed var(--tape-edge);
+  }
+  .chart-frame img { width: 100%; height: auto; display: block; }
+  .chart-fig figcaption {
+    font-family: 'Handlee', cursive;
+    color: var(--soft);
+    font-size: 1.05em;
+    margin-top: 14px;
+    padding-left: 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .fig-label {
+    color: var(--red);
+    font-weight: 400;
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 16px 22px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .cta {
+    font-family: 'Handlee', cursive;
+    font-size: 1.2em;
+    padding: 9px 22px 11px;
+    display: inline-block;
+    transition: transform 0.12s ease;
+    text-decoration: none !important;
+  }
+  .cta-primary {
+    color: #fff;
+    background: var(--red);
+    box-shadow: 3px 3px 0 var(--ink);
+    border-radius: 11px 8px 13px 9px / 9px 13px 7px 11px;
+  }
+  .cta-primary:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+  .cta-secondary {
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    border-radius: 11px 8px 13px 9px / 9px 13px 7px 11px;
+  }
+  .cta-secondary:hover { background: var(--ink); color: var(--paper); }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; opacity: 0.92; }
+  .badges img { display: inline-block; border-radius: 3px; }
+
+  /* ---------- sections ---------- */
+  section { padding: 54px 0 18px; position: relative; }
+  .divider {
+    display: block;
+    width: 100%;
+    height: 14px;
+    margin: 16px 0 0;
+    color: var(--rule);
+  }
+  h2 {
+    font-family: 'Handlee', cursive;
+    font-weight: 400;
+    font-size: clamp(1.9em, 4.4vw, 2.7em);
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    margin-bottom: 6px;
+    display: inline-block;
+    position: relative;
+  }
+  .h2-underline {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    height: 10px;
+    color: var(--red);
+    margin: 2px 0 22px;
+  }
+  h3 {
+    font-family: 'Handlee', cursive;
+    font-weight: 400;
+    font-size: 1.45em;
+    color: var(--ink);
+    margin: 34px 0 12px;
+  }
+  section p { margin-bottom: 18px; max-width: 42rem; }
+  section p:last-child { margin-bottom: 0; }
+  strong { color: var(--ink); font-weight: 600; }
+  em { font-style: italic; }
+  ul, ol { margin: 0 0 20px 0; padding: 0; list-style: none; max-width: 42rem; }
+  li {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 12px;
+  }
+  ul li::before {
+    content: '✎';
+    position: absolute;
+    left: 2px; top: 0;
+    font-family: 'Handlee', cursive;
+    color: var(--red);
+    font-size: 1.05em;
+  }
+  ol { counter-reset: step; }
+  ol li { padding-left: 38px; counter-increment: step; }
+  ol li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 1px;
+    font-family: 'Handlee', cursive;
+    color: var(--red);
+    font-size: 1.05em;
+    width: 24px; height: 24px;
+    border: 1.5px solid var(--red);
+    border-radius: 50% 48% 52% 50% / 50% 52% 48% 50%;
+    text-align: center;
+    line-height: 22px;
+  }
+
+  /* scribble = handwritten margin annotation, inline */
+  .scribble {
+    font-family: 'Handlee', cursive;
+    color: var(--red);
+    font-size: 1.12em;
+    display: block;
+    margin: 22px 0;
+    padding: 6px 0 6px 18px;
+    border-left: 3px solid var(--red);
+    max-width: 40rem;
+    line-height: 1.45;
+  }
+  .scribble::before { content: '↳ '; color: var(--red); }
+
+  /* code — taped-in paper card */
+  pre {
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    padding: 26px 24px 20px;
+    margin: 26px 0;
+    overflow-x: auto;
+    font-size: 0.86em;
+    line-height: 1.55;
+    color: var(--ink);
+    position: relative;
+    box-shadow:
+      0 14px 30px -20px rgba(26,23,20,0.30),
+      0 1px 0 var(--rule);
+    transform: rotate(-0.35deg);
+  }
+  pre::before {
+    content: '';
+    position: absolute;
+    top: -10px; left: 44%;
+    width: 72px; height: 18px;
+    transform: rotate(-3deg);
+    background: var(--tape);
+    border-left: 1px dashed var(--tape-edge);
+    border-right: 1px dashed var(--tape-edge);
+  }
+  pre code { font-family: inherit; background: none; white-space: pre; }
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--red-soft);
+    color: var(--ink);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.84em;
+  }
+
+  /* faq */
+  .faq { max-width: 44rem; }
+  details {
+    border-bottom: 1px solid var(--rule);
+    padding: 18px 0;
+  }
+  details:first-child { border-top: 1px solid var(--rule); }
+  summary {
+    cursor: pointer;
+    font-family: 'Handlee', cursive;
+    font-size: 1.3em;
+    color: var(--ink);
+    line-height: 1.3;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding-right: 4px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: '+';
+    color: var(--red);
+    font-family: 'Newsreader', serif;
+    font-size: 0.9em;
+    font-weight: 500;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  details[open] summary::after { content: '–'; }
+  details[open] summary { margin-bottom: 12px; }
+  details p { margin: 0; font-size: 0.97em; }
+
+  /* links section */
+  .links-list { max-width: 44rem; }
+
+  /* footer */
+  footer {
+    margin-top: 40px;
+    padding: 44px 0 64px;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+  .sig {
+    font-family: 'Handlee', cursive;
+    color: var(--ink);
+    font-size: 1.25em;
+    margin-bottom: 10px;
+  }
+  .sig a { color: var(--red); }
+  footer .small {
+    font-size: 0.88em;
+    color: var(--soft);
+    font-style: italic;
+    max-width: 36rem;
+    margin: 0 auto;
+  }
+
+  /* responsive */
+  @media (max-width: 720px) {
+    body { padding: 0 20px; font-size: 17px; }
+    header { padding: 56px 0 28px; }
+    section { padding: 42px 0 14px; }
+    .chart-frame { padding: 18px 14px 12px; background-size: 22px 22px; }
+    pre { padding: 22px 16px 16px; transform: rotate(-0.2deg); font-size: 0.78em; }
+    .cta { font-size: 1.08em; }
+    .h2-underline { max-width: 260px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+    html { scroll-behavior: auto; }
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>My Star History</h1>
+  <span class="eyebrow">a notebook entry —</span>
+  <h1><span class="the">this is</span>My Star History</h1>
   <p class="tagline">Self-hosted xkcd-style GitHub star-history charts. No token-sharing, no external service, no broken embeds.</p>
-  <div class="cta">
-    <a class="primary" href="https://github.com/carsteneu/mystarhistory">View on GitHub</a>
-    <a class="secondary" href="https://github.com/marketplace/actions/my-star-history">Get the Action</a>
+
+  <figure class="chart-fig">
+    <div class="chart-frame">
+      <img src="https://raw.githubusercontent.com/carsteneu/ai-memory-comparison/main/star-history.svg" alt="Example star-history chart in xkcd sketch style — hand-drawn star growth over time" loading="eager">
+    </div>
+    <figcaption><span class="fig-label">fig. 1</span> the chart, drawn by the same hand that drew this page.</figcaption>
+  </figure>
+
+  <div class="cta-row">
+    <a class="cta cta-primary" href="https://github.com/carsteneu/mystarhistory">View on GitHub →</a>
+    <a class="cta cta-secondary" href="https://github.com/marketplace/actions/my-star-history">Get the Action</a>
   </div>
   <div class="badges">
     <img src="https://github.com/carsteneu/mystarhistory/actions/workflows/test.yml/badge.svg" alt="CI">
@@ -238,35 +391,33 @@ footer a:hover { text-decoration: underline; }
     <img src="https://img.shields.io/github/stars/carsteneu/mystarhistory" alt="Stars">
     <img src="https://img.shields.io/badge/license-MIT-yellow" alt="License">
   </div>
-  <div class="hero-shot">
-    <img src="https://raw.githubusercontent.com/carsteneu/ai-memory-comparison/main/star-history.svg" alt="Example star-history chart in xkcd sketch style">
-  </div>
 </header>
 
-<section class="split">
-  <div class="txt">
+<section id="what">
+  <h2>What is this?</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q40,2 80,5 T160,6 T240,4 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+  <p>My Star History is a tool that generates a visual chart showing how a GitHub repository's star count has grown over time. The chart is rendered as a standalone SVG file with a hand-drawn xkcd sketch aesthetic, which you can commit to your repo and embed in your README.</p>
+  <p>The original popular tool for this, <a href="https://www.star-history.com">star-history.com</a>, broke in 2026 when GitHub restricted the stargazers API endpoint to repo admins and collaborators. Embedded charts on README pages stopped rendering for public visitors — they saw "Your GitHub token is invalid" instead of the chart.</p>
+  <p>My Star History solves this by generating the SVG locally (with the repo owner's token via <code>gh</code> CLI) and committing it as a static file. No external service, no token in the visitor's browser, no rate-limited embed.</p>
+</section>
+
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,7 Q120,3 240,7 T480,7 T720,6 T960,7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+
+<section id="broke">
   <h2>Why your GitHub star history chart broke in 2026</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,5 Q40,8 80,4 T160,7 T240,3 T338,5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <p>If you run an open-source project, chances are you had a <strong>star history</strong> chart embedded in your README before 2026. The popular service <a href="https://www.star-history.com">star-history.com</a> generated these charts on demand from the live GitHub API, and millions of README badges relied on it. Then GitHub changed the rules — and overnight, every embedded <strong>star-history.com chart</strong> stopped rendering for public visitors.</p>
   <p>The change was in the <strong>stargazers API</strong>, the endpoint at <code>/repos/{owner}/{repo}/stargazers</code>. Before 2026, anyone could read the list of users who had starred a public repo, along with the timestamp of each star. The <strong>stargazers API is now restricted</strong> to repo admins and collaborators — anonymous browser requests get a 403. The motivation was reducing API abuse, but the side effect was that every client-side star-history widget broke, because they relied on the visitor's browser fetching stargazer data anonymously.</p>
   <p>Repo owners can still read their own stargazer list (using <code>gh api</code> with their credentials), but visitors cannot. So a <strong>GitHub stars chart</strong> that renders for everyone needs a different approach: generate the SVG once with the owner's token, commit it as a static file, and let the README reference the static file. No client-side API calls, no broken embeds.</p>
   <p>My Star History does exactly that. It's a <strong>self-hosted star history</strong> solution: you run the CLI or the GitHub Action, and the output is a static SVG file that lives in your repo and works for every visitor, regardless of API restrictions.</p>
-  </div>
-  <div class="illu"><img src="assets/solving-problem.svg" alt="" loading="lazy"></div>
+  <span class="scribble">one API change broke every embedded chart on every README, overnight.</span>
 </section>
 
-<section class="split rev">
-  <div class="txt">
-  <h2>Track GitHub stars over time</h2>
-  <p>A star-history chart is a simple way to visualize how a repository has grown. The X-axis shows time, the Y-axis shows cumulative star count, and the curve gives you a quick sense of when the project gained traction — a launch on Hacker News, a viral tweet, a mention in a popular newsletter.</p>
-  <p>Tracking <strong>GitHub stars over time</strong> is useful for maintainers who want to understand their project's momentum, for companies evaluating open-source dependencies, and for curious community members watching a project's trajectory. My Star History renders the chart as a <strong>star history SVG</strong> — a vector file that scales cleanly in any README, commits cleanly into git, and renders the same in light and dark themes.</p>
-  <p>The SVG is roughly 15 KB per theme, which is small enough to commit without bloating the repository. The xkcd-style sketch filter gives the chart a distinctive hand-drawn look that sets it apart from generic matplotlib exports.</p>
-  </div>
-  <div class="illu"><img src="assets/revenue.svg" alt="" loading="lazy"></div>
-</section>
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,6 Q140,10 280,6 T560,7 T840,5 T1000,7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
 
-<section class="split">
-  <div class="txt">
+<section id="alternative">
   <h2>A self-hosted star-history.com alternative</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q50,2 100,6 T200,5 T300,7 T338,4" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <p>If you searched for a <strong>star-history.com alternative</strong>, this is what My Star History is. The original star-history.com is still a great web app for repo owners who log in with their token, but the embedded badge feature is broken for anonymous visitors since the API restriction. My Star History takes a different angle: instead of a hosted service, you generate the chart yourself with a single Python script or a GitHub Action, and the output is a static file you fully control.</p>
   <p>The advantages of self-hosting your star-history chart:</p>
   <ul>
@@ -277,30 +428,61 @@ footer a:hover { text-decoration: underline; }
     <li><strong>Privacy-friendly.</strong> No third-party JavaScript loads in your visitors' browsers. No tracking pixels. Just an image file.</li>
   </ul>
   <p>The tradeoff is that the chart is a snapshot, not a live view. It updates whenever you regenerate it — daily, weekly, or on demand. For most projects, daily is plenty.</p>
-  </div>
-  <div class="illu"><img src="assets/inspiration.svg" alt="" loading="lazy"></div>
 </section>
 
-<section>
-  <h2>What is this?</h2>
-  <p>My Star History is a tool that generates a visual chart showing how a GitHub repository's star count has grown over time. The chart is rendered as a standalone SVG file with a hand-drawn xkcd sketch aesthetic, which you can commit to your repo and embed in your README.</p>
-  <p>The original popular tool for this, <a href="https://www.star-history.com">star-history.com</a>, broke in 2026 when GitHub restricted the stargazers API endpoint to repo admins and collaborators. Embedded charts on README pages stopped rendering for public visitors — they saw "Your GitHub token is invalid" instead of the chart.</p>
-  <p>My Star History solves this by generating the SVG locally (with the repo owner's token via <code>gh</code> CLI) and committing it as a static file. No external service, no token in the visitor's browser, no rate-limited embed.</p>
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,7 Q100,3 200,7 T400,6 T600,8 T800,5 T1000,7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+
+<section id="built">
+  <h2>Why was this built?</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,4 Q40,8 80,5 T160,4 T240,7 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+  <p>In 2026, GitHub changed the stargazers endpoint to require repo admin or collaborator access. The change was part of an effort to reduce abuse of the API, but it had a side effect: every embedded star-history chart on every README broke overnight, because they relied on the visitor's browser reading the stargazers list anonymously.</p>
+  <p>The only way to get star data after the change is with the repo owner's credentials. This tool uses the repo owner's <code>gh</code> authentication to fetch the data once, render the chart, and store it as a static SVG that anyone can view. The chart is a snapshot, not a live embed — which is exactly what you want for a README badge anyway.</p>
 </section>
 
-<section>
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,6 Q160,2 320,6 T640,7 T960,5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+
+<section id="track">
+  <h2>Track GitHub stars over time</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q45,3 90,6 T180,4 T270,7 T338,5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+  <p>A star-history chart is a simple way to visualize how a repository has grown. The X-axis shows time, the Y-axis shows cumulative star count, and the curve gives you a quick sense of when the project gained traction — a launch on Hacker News, a viral tweet, a mention in a popular newsletter.</p>
+  <p>Tracking <strong>GitHub stars over time</strong> is useful for maintainers who want to understand their project's momentum, for companies evaluating open-source dependencies, and for curious community members watching a project's trajectory. My Star History renders the chart as a <strong>star history SVG</strong> — a vector file that scales cleanly in any README, commits cleanly into git, and renders the same in light and dark themes.</p>
+  <p>The SVG is roughly 15 KB per theme, which is small enough to commit without bloating the repository. The xkcd-style sketch filter gives the chart a distinctive hand-drawn look that sets it apart from generic matplotlib exports.</p>
+  <span class="scribble">15 KB per theme. smaller than the README it lives in.</span>
+</section>
+
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,7 Q120,10 240,6 T480,7 T720,5 T960,7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+
+<section id="features">
+  <h2>Features</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,5 Q40,2 80,6 T160,5 T240,3 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+  <ul>
+    <li><strong>xkcd sketch style</strong> — hand-drawn look via SVG turbulence filter, looks distinctive in any README</li>
+    <li><strong>Handlee font embedded</strong> — consistent rendering on every platform, no external font load</li>
+    <li><strong>Light and dark theme</strong> — auto-switches based on the viewer's GitHub theme via the <code>&lt;picture&gt;</code> element</li>
+    <li><strong>Zero dependencies</strong> — pure Python 3 stdlib + the <code>gh</code> CLI, no <code>pip install</code> required</li>
+    <li><strong>Docker GitHub Action</strong> — push to a dedicated orphan branch, no main pollution, works with branch protection</li>
+    <li><strong>Small output</strong> — around 15 KB per SVG, small enough to commit without bloating the repo</li>
+    <li><strong>Multi-repo support</strong> — chart multiple repos in a single run</li>
+    <li><strong>Customizable</strong> — line color, chart title, dimensions</li>
+  </ul>
+</section>
+
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,6 Q140,3 280,7 T560,5 T840,7 T1000,6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+
+<section id="two-ways">
   <h2>Two ways to use it</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q50,3 100,6 T200,4 T300,7 T338,5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
 
   <h3>1. As a CLI tool</h3>
   <p>If you just want a one-off chart, run the Python script directly:</p>
-  <pre><code>git clone https://github.com/carsteneu/mystarhistory.git
+<pre><code>git clone https://github.com/carsteneu/mystarhistory.git
 cd mystarhistory
 python3 mystarhistory.py --repo yourname/yourrepo</code></pre>
   <p>Output: an SVG file you can commit to your repo and reference from your README.</p>
 
   <h3>2. As a GitHub Action (self-updating)</h3>
   <p>Add a workflow file to your repo and the chart updates itself on a schedule:</p>
-  <pre><code># .github/workflows/star-history.yml
+<pre><code># .github/workflows/star-history.yml
 name: Star History
 on:
   schedule:
@@ -319,28 +501,11 @@ jobs:
   <p>The action pushes SVGs to a dedicated <code>star-history</code> branch — an orphan branch that does not pollute your main branch and works with branch protection.</p>
 </section>
 
-<section>
-  <h2>Why was this built?</h2>
-  <p>In 2026, GitHub changed the stargazers endpoint to require repo admin or collaborator access. The change was part of an effort to reduce abuse of the API, but it had a side effect: every embedded star-history chart on every README broke overnight, because they relied on the visitor's browser reading the stargazers list anonymously.</p>
-  <p>The only way to get star data after the change is with the repo owner's credentials. This tool uses the repo owner's <code>gh</code> authentication to fetch the data once, render the chart, and store it as a static SVG that anyone can view. The chart is a snapshot, not a live embed — which is exactly what you want for a README badge anyway.</p>
-</section>
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,7 Q100,3 200,7 T400,6 T600,8 T800,5 T1000,7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
 
-<section>
-  <h2>Features</h2>
-  <ul>
-    <li><strong>xkcd sketch style</strong> — hand-drawn look via SVG turbulence filter, looks distinctive in any README</li>
-    <li><strong>Handlee font embedded</strong> — consistent rendering on every platform, no external font load</li>
-    <li><strong>Light and dark theme</strong> — auto-switches based on the viewer's GitHub theme via the <code>&lt;picture&gt;</code> element</li>
-    <li><strong>Zero dependencies</strong> — pure Python 3 stdlib + the <code>gh</code> CLI, no <code>pip install</code> required</li>
-    <li><strong>Docker GitHub Action</strong> — push to a dedicated orphan branch, no main pollution, works with branch protection</li>
-    <li><strong>Small output</strong> — around 15 KB per SVG, small enough to commit without bloating the repo</li>
-    <li><strong>Multi-repo support</strong> — chart multiple repos in a single run</li>
-    <li><strong>Customizable</strong> — line color, chart title, dimensions</li>
-  </ul>
-</section>
-
-<section>
+<section id="how-action">
   <h2>How the GitHub Action works</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,5 Q40,8 80,4 T160,6 T240,3 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <p>The action runs in a Docker container (Python 3 + <code>gh</code> CLI + <code>git</code>). On each run:</p>
   <ol>
     <li>It authenticates with the default <code>GITHUB_TOKEN</code> (no PAT or Secret needed for your own repo)</li>
@@ -358,18 +523,56 @@ jobs:
   </ul>
 </section>
 
-<section>
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,6 Q160,9 320,5 T640,7 T960,5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+
+<section id="embed">
   <h2>Embed in your README</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q45,3 90,5 T180,7 T270,4 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <p>After the action runs, reference the SVGs with a <code>&lt;picture&gt;</code> block so the chart auto-switches between light and dark themes:</p>
-  <pre><code>&lt;picture&gt;
+<pre><code>&lt;picture&gt;
   &lt;source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-dark.svg"&gt;
   &lt;img alt="Star history" src="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-light.svg"&gt;
 &lt;/picture&gt;</code></pre>
   <p>Replace <code>OWNER/REPO</code> with your GitHub repo slug. The <code>star-history</code> branch is created automatically on the first run.</p>
 </section>
 
-<section>
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,7 Q120,3 240,7 T480,6 T720,8 T960,6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+
+<section id="install">
+  <h2>Installation</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,5 Q40,2 80,6 T160,4 T240,7 T338,5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+
+  <h3>CLI</h3>
+<pre><code>git clone https://github.com/carsteneu/mystarhistory.git
+cd mystarhistory
+python3 mystarhistory.py --repo yourname/yourrepo</code></pre>
+  <p>Requirements: Python 3.6+, <a href="https://cli.github.com/">gh CLI</a> authenticated via <code>gh auth login</code>.</p>
+
+  <h3>Action</h3>
+  <p>Add the workflow file shown above to <code>.github/workflows/</code> in your repo. That's it — the first scheduled run or manual trigger creates the <code>star-history</code> branch and populates it.</p>
+
+  <h3>Manual workflow (without Docker)</h3>
+  <p>If you prefer not to use the Docker Action, you can clone the repo in your existing workflow and run the script directly. See the <a href="https://github.com/carsteneu/mystarhistory#manual-workflow-without-the-action">README</a> for a copy-paste example.</p>
+</section>
+
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,6 Q140,10 280,6 T560,5 T840,7 T1000,5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+
+<section id="alternatives">
+  <h2>Alternatives considered</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q50,3 100,5 T200,7 T300,4 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+  <p>If My Star History isn't right for you, here are the alternatives and how they compare:</p>
+  <ul>
+    <li><strong><a href="https://www.star-history.com">star-history.com</a></strong> — the original. Hosted web app, generates charts on demand. Embedded badges broke in 2026 for public visitors. Requires login with GitHub token to read stargazer data now.</li>
+    <li><strong><a href="https://github.com/marketplace/actions/star-history-action">narayann7/star-history-action</a></strong> — another GitHub Action, Node.js based, vendors the star-history.com renderer. Updates README markers directly. Different language, different tradeoffs.</li>
+    <li><strong>Manual matplotlib scripts</strong> — the classic approach. More flexible, more setup, no built-in README embedding.</li>
+  </ul>
+</section>
+
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,7 Q100,3 200,7 T400,6 T600,8 T800,5 T1000,7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+
+<section id="faq">
   <h2>FAQ</h2>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,5 Q40,8 80,4 T160,6 T240,3 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <div class="faq">
     <details>
       <summary>Does this replace star-history.com?</summary>
@@ -406,37 +609,12 @@ jobs:
   </div>
 </section>
 
-<section class="split rev">
-  <div class="txt">
-  <h2>Alternatives considered</h2>
-  <p>If My Star History isn't right for you, here are the alternatives and how they compare:</p>
-  <ul>
-    <li><strong><a href="https://www.star-history.com">star-history.com</a></strong> — the original. Hosted web app, generates charts on demand. Embedded badges broke in 2026 for public visitors. Requires login with GitHub token to read stargazer data now.</li>
-    <li><strong><a href="https://github.com/marketplace/actions/star-history-action">narayann7/star-history-action</a></strong> — another GitHub Action, Node.js based, vendors the star-history.com renderer. Updates README markers directly. Different language, different tradeoffs.</li>
-    <li><strong>Manual matplotlib scripts</strong> — the classic approach. More flexible, more setup, no built-in README embedding.</li>
-  </ul>
-  </div>
-  <div class="illu"><img src="assets/guidance.svg" alt="" loading="lazy"></div>
-</section>
+<svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,6 Q160,2 320,6 T640,7 T960,5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
 
-<section>
-  <h2>Installation</h2>
-  <h3>CLI</h3>
-  <pre><code>git clone https://github.com/carsteneu/mystarhistory.git
-cd mystarhistory
-python3 mystarhistory.py --repo yourname/yourrepo</code></pre>
-  <p>Requirements: Python 3.6+, <a href="https://cli.github.com/">gh CLI</a> authenticated via <code>gh auth login</code>.</p>
-
-  <h3>Action</h3>
-  <p>Add the workflow file shown above to <code>.github/workflows/</code> in your repo. That's it — the first scheduled run or manual trigger creates the <code>star-history</code> branch and populates it.</p>
-
-  <h3>Manual workflow (without Docker)</h3>
-  <p>If you prefer not to use the Docker Action, you can clone the repo in your existing workflow and run the script directly. See the <a href="https://github.com/carsteneu/mystarhistory#manual-workflow-without-the-action">README</a> for a copy-paste example.</p>
-</section>
-
-<section>
+<section id="links">
   <h2>Links</h2>
-  <ul>
+  <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q45,3 90,5 T180,7 T270,4 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+  <ul class="links-list">
     <li><a href="https://github.com/carsteneu/mystarhistory">Source code on GitHub</a></li>
     <li><a href="https://github.com/marketplace/actions/my-star-history">GitHub Marketplace listing</a></li>
     <li><a href="https://github.com/carsteneu/mystarhistory/releases">Releases</a></li>
@@ -446,8 +624,8 @@ python3 mystarhistory.py --repo yourname/yourrepo</code></pre>
 </section>
 
 <footer>
-  <p>Built by <a href="https://github.com/carsteneu">Carsten Euwens</a> · MIT Licensed · <a href="https://github.com/carsteneu/mystarhistory">Source</a></p>
-  <p>My Star History is an independent project and is not affiliated with star-history.com, GitHub, or xkcd.</p>
+  <p class="sig">Built by <a href="https://github.com/carsteneu">Carsten Euwens</a> · MIT Licensed · <a href="https://github.com/carsteneu/mystarhistory">Source</a></p>
+  <p class="small">My Star History is an independent project and is not affiliated with star-history.com, GitHub, or xkcd.</p>
 </footer>
 
 </body>
