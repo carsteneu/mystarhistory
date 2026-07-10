@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Star History — Self-hosted xkcd-style GitHub star-history charts</title>
+<title>My Star History  -  Self-hosted xkcd-style GitHub star-history charts</title>
 <meta name="description" content="Generate self-hosted star-history SVG charts for any GitHub repo. CLI tool or GitHub Action. Works after the 2026 GitHub stargazers API change that broke star-history.com.">
 <meta name="keywords" content="star history, github stars, star-history.com, star chart, github action, self-hosted, svg chart, xkcd">
-<meta property="og:title" content="My Star History — Self-hosted GitHub star-history charts">
+<meta property="og:title" content="My Star History  -  Self-hosted GitHub star-history charts">
 <meta property="og:description" content="Generate xkcd-style star-history SVG charts. CLI or GitHub Action. Works after the 2026 stargazers API change.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://my-star-history.com/">
@@ -182,7 +182,7 @@
     font-style: italic;
   }
 
-  /* chart figure — fig.1 on graph paper */
+  /* chart figure  -  fig.1 on graph paper */
   .chart-fig { margin: 8px 0 36px; }
   .chart-frame {
     background: var(--paper-card);
@@ -342,7 +342,7 @@
   }
   .scribble::before { content: '↳ '; color: var(--red); }
 
-    /* code — taped-in paper card. tape lives on a non-scrolling wrapper
+    /* code  -  taped-in paper card. tape lives on a non-scrolling wrapper
        so overflow-x:auto on <pre> doesn't clip it (CSS spec: visible→auto). */
     .code-card {
       position: relative;
@@ -468,7 +468,7 @@
 {"@type":"Question","name":"Can I run this without GitHub Actions?","acceptedAnswer":{"@type":"Answer","text":"Yes. The CLI (mystarhistory.py) runs anywhere with Python 3 and the gh CLI. You can run it locally, in any CI system, or on a schedule via cron. The GitHub Action is just a convenience wrapper around the CLI."}},
 {"@type":"Question","name":"Does the chart update in real time?","acceptedAnswer":{"@type":"Answer","text":"No. The chart is a static snapshot from the moment the action runs. Schedule the workflow daily or weekly to keep it current. GitHub caches raw.githubusercontent.com responses for a few hours, so even after a commit the old chart may show briefly until the cache expires."}},
 {"@type":"Question","name":"Why the xkcd sketch style?","acceptedAnswer":{"@type":"Answer","text":"It's a nod to the original star-history.com aesthetic, which in turn was inspired by Randall Munroe's xkcd comics. The hand-drawn look uses an SVG feTurbulence + feDisplacementMap filter to wobble the lines slightly. If you prefer a cleaner look, the renderer is a single Python file you can modify."}},
-{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The tool is MIT-licensed open source. The GitHub Action is free to use. GitHub Actions minutes are free for public repos and included in your account for private repos (2000 minutes/month on the free tier — each run uses about 1 minute)."}}
+{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The tool is MIT-licensed open source. The GitHub Action is free to use. GitHub Actions minutes are free for public repos and included in your account for private repos (2000 minutes/month on the free tier  -  each run uses about 1 minute)."}}
 ]}
 </script>
 </head>
@@ -500,13 +500,13 @@
 </script>
 
 <header>
-  <span class="eyebrow">a notebook entry —</span>
+  <span class="eyebrow">a notebook entry  - </span>
   <h1>My Star History</h1>
-  <p class="tagline">The modern way to showcase your GitHub stars — a self-hosted, hand-drawn star-history chart that lives right in your repo. No broken embeds, no external service, no token in your visitors' browsers.</p>
+  <p class="tagline">The modern way to showcase your GitHub stars  -  a self-hosted, hand-drawn star-history chart that lives right in your repo. No broken embeds, no external service, no token in your visitors' browsers.</p>
 
   <figure class="chart-fig">
     <div class="chart-frame">
-      <img src="https://raw.githubusercontent.com/carsteneu/ai-memory-comparison/main/star-history.svg" alt="Example star-history chart in xkcd sketch style — hand-drawn star growth over time" loading="eager">
+      <img src="https://raw.githubusercontent.com/carsteneu/ai-memory-comparison/main/star-history.svg" alt="Example star-history chart in xkcd sketch style  -  hand-drawn star growth over time" loading="eager">
     </div>
     <figcaption><span class="fig-label">fig. 1</span> the chart, drawn by the same hand that drew this page.</figcaption>
   </figure>
@@ -527,7 +527,7 @@
   <h2>What is this?</h2>
   <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q40,2 80,5 T160,6 T240,4 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <p>My Star History is a tool that generates a visual chart showing how a GitHub repository's star count has grown over time. The chart is rendered as a standalone SVG file with a hand-drawn xkcd sketch aesthetic, which you can commit to your repo and embed in your README.</p>
-  <p>The original popular tool for this, <a href="https://www.star-history.com">star-history.com</a>, broke in 2026 when GitHub restricted the stargazers API endpoint to repo admins and collaborators. Embedded charts on README pages stopped rendering for public visitors — they saw "Your GitHub token is invalid" instead of the chart.</p>
+  <p>The original popular tool for this, <a href="https://www.star-history.com">star-history.com</a>, broke in 2026 when GitHub restricted the stargazers API endpoint to repo admins and collaborators. Embedded charts on README pages stopped rendering for public visitors  -  they saw "Your GitHub token is invalid" instead of the chart.</p>
   <p>My Star History solves this by generating the SVG locally (with the repo owner's token via <code>gh</code> CLI) and committing it as a static file. No external service, no token in the visitor's browser, no rate-limited embed.</p>
 </section>
 
@@ -536,8 +536,8 @@
 <section id="broke">
   <h2>Why your GitHub star history chart broke in 2026</h2>
   <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,5 Q40,8 80,4 T160,7 T240,3 T338,5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
-  <p>If you run an open-source project, chances are you had a <strong>star history</strong> chart embedded in your README before 2026. The popular service <a href="https://www.star-history.com">star-history.com</a> generated these charts on demand from the live GitHub API, and millions of README badges relied on it. Then GitHub changed the rules — and overnight, every embedded <strong>star-history.com chart</strong> stopped rendering for public visitors.</p>
-  <p>The change was in the <strong>stargazers API</strong>, the endpoint at <code>/repos/{owner}/{repo}/stargazers</code>. Before 2026, anyone could read the list of users who had starred a public repo, along with the timestamp of each star. The <strong>stargazers API is now restricted</strong> to repo admins and collaborators — anonymous browser requests get a 403. The motivation was reducing API abuse, but the side effect was that every client-side star-history widget broke, because they relied on the visitor's browser fetching stargazer data anonymously.</p>
+  <p>If you run an open-source project, chances are you had a <strong>star history</strong> chart embedded in your README before 2026. The popular service <a href="https://www.star-history.com">star-history.com</a> generated these charts on demand from the live GitHub API, and millions of README badges relied on it. Then GitHub changed the rules  -  and overnight, every embedded <strong>star-history.com chart</strong> stopped rendering for public visitors.</p>
+  <p>The change was in the <strong>stargazers API</strong>, the endpoint at <code>/repos/{owner}/{repo}/stargazers</code>. Before 2026, anyone could read the list of users who had starred a public repo, along with the timestamp of each star. The <strong>stargazers API is now restricted</strong> to repo admins and collaborators  -  anonymous browser requests get a 403. The motivation was reducing API abuse, but the side effect was that every client-side star-history widget broke, because they relied on the visitor's browser fetching stargazer data anonymously.</p>
   <p>Repo owners can still read their own stargazer list (using <code>gh api</code> with their credentials), but visitors cannot. So a <strong>GitHub stars chart</strong> that renders for everyone needs a different approach: generate the SVG once with the owner's token, commit it as a static file, and let the README reference the static file. No client-side API calls, no broken embeds.</p>
   <p>My Star History does exactly that. It's a <strong>self-hosted star history</strong> solution: you run the CLI or the GitHub Action, and the output is a static SVG file that lives in your repo and works for every visitor, regardless of API restrictions.</p>
   <span class="scribble">one API change broke every embedded chart on every README, overnight.</span>
@@ -551,13 +551,13 @@
   <p>If you searched for a <strong>star-history.com alternative</strong>, this is what My Star History is. The original star-history.com is still a great web app for repo owners who log in with their token, but the embedded badge feature is broken for anonymous visitors since the API restriction. My Star History takes a different angle: instead of a hosted service, you generate the chart yourself with a single Python script or a GitHub Action, and the output is a static file you fully control.</p>
   <p>The advantages of self-hosting your star-history chart:</p>
   <ul>
-    <li><strong>No rate limits.</strong> The chart is a static SVG — no per-visitor API calls, no GitHub rate-limit risk.</li>
+    <li><strong>No rate limits.</strong> The chart is a static SVG  -  no per-visitor API calls, no GitHub rate-limit risk.</li>
     <li><strong>No third-party service.</strong> The SVG lives in your repo, not on someone else's server. If your repo exists, the chart exists.</li>
     <li><strong>No broken embeds.</strong> A static SVG cannot "break" the way a live API-driven embed can. If the GitHub API changes again, your historical chart still renders.</li>
     <li><strong>Full control.</strong> You can customize colors, dimensions, the chart title, and even fork the renderer if you want a different visual style.</li>
     <li><strong>Privacy-friendly.</strong> No third-party JavaScript loads in your visitors' browsers. No tracking pixels. Just an image file.</li>
   </ul>
-  <p>The tradeoff is that the chart is a snapshot, not a live view. It updates whenever you regenerate it — daily, weekly, or on demand. For most projects, daily is plenty.</p>
+  <p>The tradeoff is that the chart is a snapshot, not a live view. It updates whenever you regenerate it  -  daily, weekly, or on demand. For most projects, daily is plenty.</p>
 </section>
 
 <svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,7 Q100,3 200,7 T400,6 T600,8 T800,5 T1000,7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
@@ -566,7 +566,7 @@
   <h2>Why was this built?</h2>
   <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,4 Q40,8 80,5 T160,4 T240,7 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <p>In 2026, GitHub changed the stargazers endpoint to require repo admin or collaborator access. The change was part of an effort to reduce abuse of the API, but it had a side effect: every embedded star-history chart on every README broke overnight, because they relied on the visitor's browser reading the stargazers list anonymously.</p>
-  <p>The only way to get star data after the change is with the repo owner's credentials. This tool uses the repo owner's <code>gh</code> authentication to fetch the data once, render the chart, and store it as a static SVG that anyone can view. The chart is a snapshot, not a live embed — which is exactly what you want for a README badge anyway.</p>
+  <p>The only way to get star data after the change is with the repo owner's credentials. This tool uses the repo owner's <code>gh</code> authentication to fetch the data once, render the chart, and store it as a static SVG that anyone can view. The chart is a snapshot, not a live embed  -  which is exactly what you want for a README badge anyway.</p>
 </section>
 
 <svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,6 Q160,2 320,6 T640,7 T960,5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
@@ -574,8 +574,8 @@
 <section id="track">
   <h2>Track GitHub stars over time</h2>
   <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q45,3 90,6 T180,4 T270,7 T338,5" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
-  <p>A star-history chart is a simple way to visualize how a repository has grown. The X-axis shows time, the Y-axis shows cumulative star count, and the curve gives you a quick sense of when the project gained traction — a launch on Hacker News, a viral tweet, a mention in a popular newsletter.</p>
-  <p>Tracking <strong>GitHub stars over time</strong> is useful for maintainers who want to understand their project's momentum, for companies evaluating open-source dependencies, and for curious community members watching a project's trajectory. My Star History renders the chart as a <strong>star history SVG</strong> — a vector file that scales cleanly in any README, commits cleanly into git, and renders the same in light and dark themes.</p>
+  <p>A star-history chart is a simple way to visualize how a repository has grown. The X-axis shows time, the Y-axis shows cumulative star count, and the curve gives you a quick sense of when the project gained traction  -  a launch on Hacker News, a viral tweet, a mention in a popular newsletter.</p>
+  <p>Tracking <strong>GitHub stars over time</strong> is useful for maintainers who want to understand their project's momentum, for companies evaluating open-source dependencies, and for curious community members watching a project's trajectory. My Star History renders the chart as a <strong>star history SVG</strong>  -  a vector file that scales cleanly in any README, commits cleanly into git, and renders the same in light and dark themes.</p>
   <p>The SVG is roughly 15 KB per theme, which is small enough to commit without bloating the repository. The xkcd-style sketch filter gives the chart a distinctive hand-drawn look that sets it apart from generic matplotlib exports.</p>
   <span class="scribble">15 KB per theme. smaller than the README it lives in.</span>
 </section>
@@ -586,14 +586,14 @@
   <h2>Features</h2>
   <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,5 Q40,2 80,6 T160,5 T240,3 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <ul>
-    <li><strong>xkcd sketch style</strong> — hand-drawn look via SVG turbulence filter, looks distinctive in any README</li>
-    <li><strong>Handlee font embedded</strong> — consistent rendering on every platform, no external font load</li>
-    <li><strong>Light and dark theme</strong> — auto-switches based on the viewer's GitHub theme via the <code>&lt;picture&gt;</code> element</li>
-    <li><strong>Zero dependencies</strong> — pure Python 3 stdlib + the <code>gh</code> CLI, no <code>pip install</code> required</li>
-    <li><strong>Docker GitHub Action</strong> — push to a dedicated orphan branch, no main pollution, works with branch protection</li>
-    <li><strong>Small output</strong> — around 15 KB per SVG, small enough to commit without bloating the repo</li>
-    <li><strong>Multi-repo support</strong> — chart multiple repos in a single run</li>
-    <li><strong>Customizable</strong> — line color, chart title, dimensions</li>
+    <li><strong>xkcd sketch style</strong>  -  hand-drawn look via SVG turbulence filter, looks distinctive in any README</li>
+    <li><strong>Handlee font embedded</strong>  -  consistent rendering on every platform, no external font load</li>
+    <li><strong>Light and dark theme</strong>  -  auto-switches based on the viewer's GitHub theme via the <code>&lt;picture&gt;</code> element</li>
+    <li><strong>Zero dependencies</strong>  -  pure Python 3 stdlib + the <code>gh</code> CLI, no <code>pip install</code> required</li>
+    <li><strong>Docker GitHub Action</strong>  -  push to a dedicated orphan branch, no main pollution, works with branch protection</li>
+    <li><strong>Small output</strong>  -  around 15 KB per SVG, small enough to commit without bloating the repo</li>
+    <li><strong>Multi-repo support</strong>  -  chart multiple repos in a single run</li>
+    <li><strong>Customizable</strong>  -  line color, chart title, dimensions</li>
   </ul>
 </section>
 
@@ -628,7 +628,7 @@ jobs:
       - uses: carsteneu/mystarhistory@v1
         with:
           repos: ${{ github.repository }}</code></pre></div>
-  <p>The action pushes SVGs to a dedicated <code>star-history</code> branch — an orphan branch that does not pollute your main branch and works with branch protection.</p>
+  <p>The action pushes SVGs to a dedicated <code>star-history</code> branch  -  an orphan branch that does not pollute your main branch and works with branch protection.</p>
 </section>
 
 <svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,7 Q100,3 200,7 T400,6 T600,8 T800,5 T1000,7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
@@ -643,13 +643,13 @@ jobs:
     <li>Renders light and dark SVGs using the same renderer the CLI uses</li>
     <li>Pushes the SVGs to a <code>star-history</code> orphan branch in your repo</li>
   </ol>
-  <p>The orphan branch contains only the SVG files — no commit history from your main branch, no interference with your codebase. Your README references the SVGs via the <code>raw.githubusercontent.com</code> URL pointing at the <code>star-history</code> branch.</p>
+  <p>The orphan branch contains only the SVG files  -  no commit history from your main branch, no interference with your codebase. Your README references the SVGs via the <code>raw.githubusercontent.com</code> URL pointing at the <code>star-history</code> branch.</p>
   <p>This approach was chosen after exploring alternatives:</p>
   <ul>
-    <li><strong>Committing to main</strong> — rejected because it pollutes commit history and breaks on protected branches</li>
-    <li><strong>GitHub Pages</strong> — works but conflicts with repos that already use Pages for documentation</li>
-    <li><strong>PR-based updates</strong> — requires manual merge, defeats the point of "self-updating"</li>
-    <li><strong>PAT with branch-protection bypass</strong> — too much setup friction for users</li>
+    <li><strong>Committing to main</strong>  -  rejected because it pollutes commit history and breaks on protected branches</li>
+    <li><strong>GitHub Pages</strong>  -  works but conflicts with repos that already use Pages for documentation</li>
+    <li><strong>PR-based updates</strong>  -  requires manual merge, defeats the point of "self-updating"</li>
+    <li><strong>PAT with branch-protection bypass</strong>  -  too much setup friction for users</li>
   </ul>
 </section>
 
@@ -679,7 +679,7 @@ python3 mystarhistory.py --repo yourname/yourrepo</code></pre></div>
   <p>Requirements: Python 3.6+, <a href="https://cli.github.com/">gh CLI</a> authenticated via <code>gh auth login</code>.</p>
 
   <h3>Action</h3>
-  <p>Add the workflow file shown above to <code>.github/workflows/</code> in your repo. That's it — the first scheduled run or manual trigger creates the <code>star-history</code> branch and populates it.</p>
+  <p>Add the workflow file shown above to <code>.github/workflows/</code> in your repo. That's it  -  the first scheduled run or manual trigger creates the <code>star-history</code> branch and populates it.</p>
 
   <h3>Manual workflow (without Docker)</h3>
   <p>If you prefer not to use the Docker Action, you can clone the repo in your existing workflow and run the script directly. See the <a href="https://github.com/carsteneu/mystarhistory#manual-workflow-without-the-action">README</a> for a copy-paste example.</p>
@@ -692,9 +692,9 @@ python3 mystarhistory.py --repo yourname/yourrepo</code></pre></div>
   <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q50,3 100,5 T200,7 T300,4 T338,6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <p>If My Star History isn't right for you, here are the alternatives and how they compare:</p>
   <ul>
-    <li><strong><a href="https://www.star-history.com">star-history.com</a></strong> — the original. Hosted web app, generates charts on demand. Embedded badges broke in 2026 for public visitors. Requires login with GitHub token to read stargazer data now.</li>
-    <li><strong><a href="https://github.com/marketplace/actions/star-history-action">narayann7/star-history-action</a></strong> — another GitHub Action, Node.js based, vendors the star-history.com renderer. Updates README markers directly. Different language, different tradeoffs.</li>
-    <li><strong>Manual matplotlib scripts</strong> — the classic approach. More flexible, more setup, no built-in README embedding.</li>
+    <li><strong><a href="https://www.star-history.com">star-history.com</a></strong>  -  the original. Hosted web app, generates charts on demand. Embedded badges broke in 2026 for public visitors. Requires login with GitHub token to read stargazer data now.</li>
+    <li><strong><a href="https://github.com/marketplace/actions/star-history-action">narayann7/star-history-action</a></strong>  -  another GitHub Action, Node.js based, vendors the star-history.com renderer. Updates README markers directly. Different language, different tradeoffs.</li>
+    <li><strong>Manual matplotlib scripts</strong>  -  the classic approach. More flexible, more setup, no built-in README embedding.</li>
   </ul>
 </section>
 
@@ -734,7 +734,7 @@ python3 mystarhistory.py --repo yourname/yourrepo</code></pre></div>
     </details>
     <details>
       <summary>Is it free?</summary>
-      <p>Yes. The tool is MIT-licensed open source. The GitHub Action is free to use. GitHub Actions minutes are free for public repos and included in your account for private repos (2000 minutes/month on the free tier — each run uses about 1 minute).</p>
+      <p>Yes. The tool is MIT-licensed open source. The GitHub Action is free to use. GitHub Actions minutes are free for public repos and included in your account for private repos (2000 minutes/month on the free tier  -  each run uses about 1 minute).</p>
     </details>
   </div>
 </section>
