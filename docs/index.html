@@ -12,6 +12,14 @@
 <meta property="og:url" content="https://my-star-history.com/">
 <meta property="og:image" content="https://raw.githubusercontent.com/carsteneu/ai-memory-comparison/main/star-history.svg">
 <link rel="canonical" href="https://my-star-history.com/">
+<script>
+(function() {
+  var stored = localStorage.getItem('theme');
+  if (stored === 'dark' || stored === 'light') {
+    document.documentElement.setAttribute('data-theme', stored);
+  }
+})();
+</script>
 <style>
   @font-face {
     font-family: 'Handlee';
@@ -56,33 +64,73 @@
     font-display: swap;
   }
 
-  :root {
-    --ink: #1a1714;
-    --paper: #f6f1e6;
-    --paper-card: #fbf7ec;
-    --red: #dd4528;
-    --red-soft: rgba(221, 69, 40, 0.10);
-      --graphite: #5b554c;
-      --soft: #756c5e;
-      --rule: #ddd3bd;
-      --grid: #d8cdb4;
-    --tape: rgba(193, 178, 138, 0.42);
-    --tape-edge: rgba(168, 154, 118, 0.55);
-  }
-  @media (prefers-color-scheme: dark) {
     :root {
-      --ink: #e8e0cf;
-      --paper: #1b1814;
-      --paper-card: #221e19;
-      --red-soft: rgba(221, 69, 40, 0.16);
-        --graphite: #b3a994;
-        --soft: #9a9082;
-        --rule: #3a342c;
-        --grid: #443b2c;
-      --tape: rgba(120, 108, 80, 0.30);
-      --tape-edge: rgba(150, 136, 100, 0.45);
+      --ink: #1a1714;
+      --paper: #f6f1e6;
+      --paper-card: #fbf7ec;
+      --red: #dd4528;
+      --red-soft: rgba(221, 69, 40, 0.10);
+        --graphite: #5b554c;
+        --soft: #756c5e;
+        --rule: #ddd3bd;
+        --grid: #d8cdb4;
+      --tape: rgba(193, 178, 138, 0.42);
+      --tape-edge: rgba(168, 154, 118, 0.55);
     }
-  }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --ink: #e8e0cf;
+        --paper: #1b1814;
+        --paper-card: #221e19;
+        --red-soft: rgba(221, 69, 40, 0.16);
+          --graphite: #b3a994;
+          --soft: #9a9082;
+          --rule: #3a342c;
+          --grid: #443b2c;
+        --tape: rgba(120, 108, 80, 0.30);
+        --tape-edge: rgba(150, 136, 100, 0.45);
+      }
+    }
+    :root[data-theme="dark"] {
+        --ink: #e8e0cf;
+        --paper: #1b1814;
+        --paper-card: #221e19;
+        --red-soft: rgba(221, 69, 40, 0.16);
+          --graphite: #b3a994;
+          --soft: #9a9082;
+          --rule: #3a342c;
+          --grid: #443b2c;
+        --tape: rgba(120, 108, 80, 0.30);
+        --tape-edge: rgba(150, 136, 100, 0.45);
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 100;
+      width: 44px;
+      height: 44px;
+      border: 1.5px solid var(--rule);
+      background: var(--paper-card);
+      color: var(--ink);
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: 'Handlee', cursive;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s, border-color 0.15s;
+      box-shadow: 2px 2px 0 var(--rule);
+    }
+    .theme-toggle:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--rule);
+    }
+    .theme-toggle:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--rule);
+    }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
@@ -425,6 +473,31 @@
 </script>
 </head>
 <body>
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">
+  <span id="theme-icon">☀</span>
+</button>
+<script>
+(function() {
+  var btn = document.getElementById('theme-toggle');
+  var icon = document.getElementById('theme-icon');
+  function isDark() {
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t === 'dark') return true;
+    if (t === 'light') return false;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function syncIcon() {
+    icon.textContent = isDark() ? '☀' : '☾';
+  }
+  syncIcon();
+  btn.addEventListener('click', function() {
+    var next = isDark() ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    syncIcon();
+  });
+})();
+</script>
 
 <header>
   <span class="eyebrow">a notebook entry —</span>
