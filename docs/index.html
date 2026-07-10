@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,8 +15,8 @@
 <script>
 (function() {
   var stored = localStorage.getItem('theme');
-  if (stored === 'dark' || stored === 'light') {
-    document.documentElement.setAttribute('data-theme', stored);
+  if (stored === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
   }
 })();
 </script>
@@ -502,7 +502,7 @@
 <header>
   <span class="eyebrow">a notebook entry —</span>
   <h1>My Star History</h1>
-  <p class="tagline">Self-hosted xkcd-style GitHub star-history charts. No token-sharing, no external service, no broken embeds.</p>
+  <p class="tagline">The modern way to showcase your GitHub stars — a self-hosted, hand-drawn star-history chart that lives right in your repo. No broken embeds, no external service, no token in your visitors' browsers.</p>
 
   <figure class="chart-fig">
     <div class="chart-frame">
