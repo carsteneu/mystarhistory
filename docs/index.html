@@ -478,6 +478,28 @@
   }
   .illu img { width: 100%; height: auto; display: block; }
 
+  /* alternating split layout */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    align-items: center;
+    margin: 32px 0 8px;
+  }
+  .split.reverse .split-text { order: 2; }
+  .split.reverse .split-illu { order: 1; }
+  .split-text { min-width: 0; }
+  .split-text p { margin-bottom: 14px; }
+  .split-text p:last-child { margin-bottom: 0; }
+  .split-illu { min-width: 0; }
+  .split-illu img { width: 100%; height: auto; display: block; }
+  @media (max-width: 720px) {
+    .split { grid-template-columns: 1fr; gap: 20px; margin: 24px 0 8px; }
+    .split.reverse .split-text { order: 1; }
+    .split.reverse .split-illu { order: 2; }
+    .split-illu { max-width: 320px; margin: 0 auto; }
+  }
+
   /* footer */
   footer {
     margin-top: 40px;
@@ -690,16 +712,17 @@
   <h2>A self-hosted star-history.com alternative</h2>
   <svg class="h2-underline" viewBox="0 0 340 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2,6 Q50,2 100,6 T200,5 T300,7 T338,4" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
   <p>If you searched for a <strong>star-history.com alternative</strong>, this is what My Star History is. The original star-history.com is still a great web app for repo owners who log in with their token, but the embedded badge feature is broken for anonymous visitors since the API restriction. My Star History takes a different angle: instead of a hosted service, you generate the chart yourself with a single Python script or a GitHub Action, and the output is a static file you fully control.</p>
-  <p>The advantages of self-hosting your star-history chart:</p>
-  <ul>
-    <li><strong>No rate limits.</strong> The chart is a static SVG  -  no per-visitor API calls, no GitHub rate-limit risk.</li>
-    <li><strong>No third-party service.</strong> The SVG lives in your repo, not on someone else's server. If your repo exists, the chart exists.</li>
-    <li><strong>No broken embeds.</strong> A static SVG cannot "break" the way a live API-driven embed can. If the GitHub API changes again, your historical chart still renders.</li>
-    <li><strong>Full control.</strong> You can customize colors, dimensions, the chart title, and even fork the renderer if you want a different visual style.</li>
-    <li><strong>Privacy-friendly.</strong> No third-party JavaScript loads in your visitors' browsers. No tracking pixels. Just an image file.</li>
-  </ul>
   <p>The tradeoff is that the chart is a snapshot, not a live view. It updates whenever you regenerate it  -  daily, weekly, or on demand. For most projects, daily is plenty.</p>
-  <div class="illu"><img src="assets/illus/community.svg" alt="Illustration of an open-source community collaborating" loading="lazy"></div>
+  <div class="split">
+    <div class="split-text">
+      <h3 style="margin-top:0">Why self-host?</h3>
+      <p><strong>No rate limits.</strong> Static SVG means no per-visitor API calls, no GitHub rate-limit risk.</p>
+      <p><strong>No third-party service.</strong> The SVG lives in your repo, not on someone else's server. If your repo exists, the chart exists.</p>
+      <p><strong>No broken embeds.</strong> A static SVG cannot break the way a live API-driven embed can.</p>
+      <p><strong>Privacy-friendly.</strong> No third-party JavaScript loads in your visitors' browsers. No tracking pixels. Just an image file.</p>
+    </div>
+    <div class="split-illu"><img src="assets/illus/community.svg" alt="Illustration of an open-source community collaborating" loading="lazy"></div>
+  </div>
 </section>
 
 <svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,7 Q100,3 200,7 T400,6 T600,8 T800,5 T1000,7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
@@ -720,7 +743,13 @@
   <p>Tracking <strong>GitHub stars over time</strong> is useful for maintainers who want to understand their project's momentum, for companies evaluating open-source dependencies, and for curious community members watching a project's trajectory. My Star History renders the chart as a <strong>star history SVG</strong>  -  a vector file that scales cleanly in any README, commits cleanly into git, and renders the same in light and dark themes.</p>
   <p>The SVG is roughly 15 KB per theme, which is small enough to commit without bloating the repository. The xkcd-style sketch filter gives the chart a distinctive hand-drawn look that sets it apart from generic matplotlib exports.</p>
   <span class="scribble">15 KB per theme. smaller than the README it lives in.</span>
-  <div class="illu"><img src="assets/illus/growth-analytics.svg" alt="Illustration showing growth analytics with upward trend" loading="lazy"></div>
+  <div class="split reverse">
+    <div class="split-text">
+      <p>Tracking <strong>GitHub stars over time</strong> reveals when a project gained traction. A launch on Hacker News shows as a steep upward curve. A viral tweet creates a spike. A mention in a popular newsletter adds a step.</p>
+      <p>For maintainers, this is a momentum indicator. For companies evaluating open-source dependencies, it's a health signal. For community members, it's a story of how a project grew.</p>
+    </div>
+    <div class="split-illu"><img src="assets/illus/growth-analytics.svg" alt="Illustration showing growth analytics with upward trend" loading="lazy"></div>
+  </div>
 </section>
 
 <svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,7 Q120,10 240,6 T480,7 T720,5 T960,7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
@@ -769,7 +798,13 @@
 cd mystarhistory
 python3 mystarhistory.py --repo yourname/yourrepo</code></pre></div>
   <p>Output: an SVG file you can commit to your repo and reference from your README.</p>
-  <div class="illu"><img src="assets/illus/get-started.svg" alt="Illustration showing getting started with a new tool" loading="lazy"></div>
+  <div class="split">
+    <div class="split-text">
+      <p>Requirements: Python 3.6+ and the <code>gh</code> CLI authenticated via <code>gh auth login</code>. No pip install, no dependencies, no virtual environment.</p>
+      <p>The CLI is a single ~290-line Python file using only the standard library. You can read it, modify it, or fork it without setup overhead.</p>
+    </div>
+    <div class="split-illu"><img src="assets/illus/get-started.svg" alt="Illustration showing getting started with a new tool" loading="lazy"></div>
+  </div>
 
   <h3>2. As a GitHub Action (self-updating)</h3>
   <p>Add a workflow file to your repo and the chart updates itself on a schedule:</p>
@@ -805,14 +840,17 @@ jobs:
     <li>Pushes the SVGs to a <code>star-history</code> orphan branch in your repo</li>
   </ol>
   <p>The orphan branch contains only the SVG files  -  no commit history from your main branch, no interference with your codebase. Your README references the SVGs via the <code>raw.githubusercontent.com</code> URL pointing at the <code>star-history</code> branch.</p>
-  <div class="illu"><img src="assets/illus/chart.svg" alt="Illustration of data visualization and chart rendering" loading="lazy"></div>
-  <p>This approach was chosen after exploring alternatives:</p>
-  <ul>
-    <li><strong>Committing to main</strong>  -  rejected because it pollutes commit history and breaks on protected branches</li>
-    <li><strong>GitHub Pages</strong>  -  works but conflicts with repos that already use Pages for documentation</li>
-    <li><strong>PR-based updates</strong>  -  requires manual merge, defeats the point of "self-updating"</li>
-    <li><strong>PAT with branch-protection bypass</strong>  -  too much setup friction for users</li>
-  </ul>
+  <div class="split reverse">
+    <div class="split-text">
+      <h3 style="margin-top:0">Rejected alternatives</h3>
+      <p><strong>Committing to main</strong>  -  pollutes commit history and breaks on protected branches.</p>
+      <p><strong>GitHub Pages</strong>  -  works but conflicts with repos that use Pages for documentation.</p>
+      <p><strong>PR-based updates</strong>  -  requires manual merge, defeats the point of self-updating.</p>
+      <p><strong>PAT with branch-protection bypass</strong>  -  too much setup friction for users.</p>
+    </div>
+    <div class="split-illu"><img src="assets/illus/chart.svg" alt="Illustration of data visualization and chart rendering" loading="lazy"></div>
+  </div>
+  <p>This approach was chosen after exploring the alternatives above.</p>
 </section>
 
 <svg class="divider" viewBox="0 0 1000 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0,6 Q160,9 320,5 T640,7 T960,5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
