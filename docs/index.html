@@ -431,6 +431,9 @@
   details[open] > summary { cursor: pointer; }
   details p { margin: 0 0 12px; font-size: 0.97em; }
   details p:last-child { margin-bottom: 0; }
+  details ul, details ol { margin: 0 0 12px 24px; max-width: 40rem; }
+  details ul li::before { content: '→'; color: var(--red); }
+  details code { font-size: 0.88em; }
 
   /* links section */
   .links-list { max-width: 44rem; }
@@ -1016,14 +1019,30 @@ python3 mystarhistory.py --repo yourname/yourrepo</code></pre></div>
       <summary>Is it free?</summary>
       <p>Yes, completely free. The tool is MIT-licensed open source, which means you can use it, modify it, and distribute it freely. The GitHub Action is free to use on the Marketplace. GitHub Actions minutes are free for public repos (unlimited) and included in your account for private repos (2,000 minutes/month on the free tier). Each star-history run uses approximately 1 minute of CI time, so even on the free tier you could run it daily for a year and use less than 1% of your monthly allowance. There are no paid tiers, no premium features, and no usage limits beyond GitHub's standard Actions limits.</p>
     </details>
-    <details open>
-      <summary>How do I add a star-history chart to my GitHub README?</summary>
-      <p>There are two steps. First, add the GitHub Action workflow file to <code>.github/workflows/star-history.yml</code> in your repo (the code is in the <a href="#two-ways">Installation</a> section above). Trigger it manually once via the Actions tab to create the <code>star-history</code> branch. Second, add a <code>&lt;picture&gt;</code> block to your <code>README.md</code> that references the SVGs on the <code>star-history</code> branch: use a <code>&lt;source&gt;</code> tag with <code>prefers-color-scheme: dark</code> for the dark SVG, and an <code>&lt;img&gt;</code> tag for the light SVG. Replace <code>OWNER/REPO</code> with your GitHub repo slug. The chart will auto-update on the schedule you set in the workflow (daily by default) and the README will always show the latest version via the <code>raw.githubusercontent.com</code> URL.</p>
-    </details>
-    <details open>
-      <summary>Why does the GitHub stargazers API return 403?</summary>
-      <p>On June 30, 2026, GitHub restricted the stargazers API endpoint (<code>/repos/{owner}/{repo}/stargazers</code>) to repo admins and collaborators. Anonymous requests and requests from users without access now get a <code>403 Forbidden</code> response. The change was part of a broader effort to reduce API abuse and protect user privacy - the stargazers endpoint previously exposed the list of users who starred a repo, along with timestamps, which could be scraped for surveillance or spam. Repo owners can still read their own stargazer data with an authenticated request (using <code>gh api</code> or a token), but visitors to your README cannot. This is why live embeds broke: they relied on the visitor's browser making an anonymous API call that now fails.</p>
-    </details>
+      <details open>
+        <summary>How do I add a star-history chart to my GitHub README?</summary>
+        <p>Two steps, about 5 minutes total:</p>
+        <p><strong>Step 1 - Add the workflow file.</strong> Create <code>.github/workflows/star-history.yml</code> in your repo with the workflow configuration shown in the <a href="#two-ways">Two ways to use it</a> section. Make sure <code>permissions: contents: write</code> is set.</p>
+        <p><strong>Step 2 - Trigger the first run.</strong> Go to the Actions tab in your repo, select the "Star History" workflow, and click "Run workflow" manually. This creates the <code>star-history</code> branch and generates the first SVGs.</p>
+        <p><strong>Step 3 - Add the embed code to your README.</strong> Copy the <code>&lt;picture&gt;</code> block from the <a href="#embed">Embed in your README</a> section, replace <code>OWNER/REPO</code> with your GitHub repo slug, and paste it into your <code>README.md</code>:</p>
+<div class="code-card"><pre><code>&lt;picture&gt;
+  &lt;source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-dark.svg"&gt;
+  &lt;img alt="Star history" src="https://raw.githubusercontent.com/OWNER/REPO/star-history/assets/my-star-history/star-history-light.svg"&gt;
+&lt;/picture&gt;</code></pre></div>
+        <p><strong>Step 4 - Commit and push.</strong> The chart renders in your README on GitHub. It auto-switches between light and dark themes based on the viewer's GitHub theme preference. The action runs on the schedule you set (daily by default) and updates the SVGs automatically.</p>
+      </details>
+      <details open>
+        <summary>Why does the GitHub stargazers API return 403?</summary>
+        <p>On <strong>June 30, 2026</strong>, GitHub restricted the stargazers API endpoint <code>/repos/{owner}/{repo}/stargazers</code> to repo admins and collaborators.</p>
+        <p><strong>What changed:</strong></p>
+        <ul>
+          <li>Anonymous requests now get <code>403 Forbidden</code></li>
+          <li>Requests from users without repo access also get <code>403</code></li>
+          <li>Repo admins and collaborators can still read their own stargazer data with an authenticated request</li>
+        </ul>
+        <p><strong>Why GitHub made the change:</strong> the stargazers endpoint previously exposed the list of users who starred a repo, along with timestamps. This data could be scraped for surveillance, spam targeting, or competitive intelligence. The restriction was part of a broader effort to reduce API abuse and protect user privacy.</p>
+        <p><strong>Why this broke live embeds:</strong> tools like star-history.com's embedded badges relied on the visitor's browser making an anonymous API call to fetch stargazer data. That call now fails with a 403, so the chart cannot render. mystarhistory avoids this by fetching the data server-side with the repo owner's token and committing a static SVG.</p>
+      </details>
     <details open>
       <summary>What is the star-history.com API restriction and when did it happen?</summary>
       <p>GitHub announced the restriction on <strong>June 30, 2026</strong>, as part of their "Upcoming access restrictions to public API endpoints and UI views" changelog entry. The stargazers endpoint, which returns who starred a repository and when, was limited to the repository's own admins and collaborators. This affected every tool that relied on anonymous access to star data: star-history.com's embedded charts, browser extensions, third-party analytics tools, and any script that fetched stargazer timestamps without authentication. Star-history.com acknowledged the breakage in a blog post on July 6, 2026, explaining that live charts for repos you don't own are no longer possible. The restriction is permanent - there is no workaround for anonymous access.</p>
@@ -1036,10 +1055,17 @@ python3 mystarhistory.py --repo yourname/yourrepo</code></pre></div>
       <summary>Can I compare multiple repos in one star-history chart?</summary>
       <p>Yes, mystarhistory supports multi-repo charts. Pass a comma-separated list of <code>owner/repo</code> pairs to the <code>repos</code> input of the GitHub Action, or use the <code>--repo</code> flag with multiple values in the CLI. Each repo gets its own line in the chart with a distinct color, and the legend identifies which line belongs to which repo. This is useful for comparing your project against competitors, tracking multiple repos in an organization, or visualizing the growth of a fork relative to the upstream. Note that you need read access to each repo's stargazer data, so this works best for repos you own or collaborate on.</p>
     </details>
-    <details open>
-      <summary>What is an orphan branch and why does mystarhistory use one?</summary>
-      <p>An orphan branch in git is a branch with no commit history - it starts completely empty, with no connection to any other branch in the repo. mystarhistory uses an orphan branch called <code>star-history</code> to store the generated SVG files. This has three advantages: first, it doesn't pollute your main branch's commit history with automated chart updates. Second, it's not subject to branch protection rules on <code>main</code>, so the action can push without a PR or admin token. Third, the branch contains only the SVG files (about 30 KB total for light and dark themes), not your full codebase, so checking it out is fast and lightweight. The orphan branch is managed in a temporary directory during the action run - your workspace is never modified.</p>
-    </details>
+      <details open>
+        <summary>What is an orphan branch and why does mystarhistory use one?</summary>
+        <p>An orphan branch in git is a branch with no commit history - it starts completely empty, with no connection to any other branch in the repo. mystarhistory uses an orphan branch called <code>star-history</code> to store the generated SVG files.</p>
+        <p><strong>Three advantages of using an orphan branch:</strong></p>
+        <ul>
+          <li><strong>No history pollution</strong> - automated chart updates don't clutter your main branch's commit log</li>
+          <li><strong>No branch protection conflicts</strong> - orphan branches are not subject to <code>main</code>'s protection rules, so the action can push without a PR or admin token</li>
+          <li><strong>Lightweight</strong> - the branch contains only the SVG files (~30 KB total for light and dark themes), not your full codebase</li>
+        </ul>
+        <p>The orphan branch is managed in a temporary directory during the action run - your workspace is never modified.</p>
+      </details>
     <details open>
       <summary>How do I customize the star-history chart colors and dimensions?</summary>
       <p>The CLI accepts several optional flags: <code>--color</code> sets the line color (default is a warm red <code>#dd4528</code>, but any hex color works), <code>--title</code> sets the chart title text, <code>--width</code> and <code>--height</code> control the SVG dimensions in pixels. The GitHub Action exposes the same options as inputs: <code>color</code>, <code>title</code>, and dimensions. For more advanced customization (font, sketch filter intensity, axis labels, background color), you can fork the <code>mystarhistory.py</code> renderer - it's a single Python file with no dependencies beyond the standard library, so modifying it is straightforward. The dark theme automatically inverts colors for dark mode display.</p>
@@ -1048,10 +1074,17 @@ python3 mystarhistory.py --repo yourname/yourrepo</code></pre></div>
       <summary>Does the star-history chart work on GitHub Pages?</summary>
       <p>Yes, but you don't need Pages for it. The standard setup references the SVGs via <code>raw.githubusercontent.com</code> URLs pointing at the <code>star-history</code> branch, which works without Pages. However, if you want to use the SVGs in a Pages site, you can reference them the same way - raw URLs work from any HTML page. If you prefer to serve the SVGs from your Pages domain instead, you can change the <code>output-dir</code> to a directory in your Pages branch and adjust the README URLs accordingly. There is no conflict between the star-history orphan branch and a Pages branch.</p>
     </details>
-    <details open>
-      <summary>How often should I update my star-history chart?</summary>
-      <p>Daily is the recommended cadence for most projects. Star counts change slowly - even a popular repo might gain 5-20 stars per day, which doesn't produce a visibly different chart at that resolution. A daily cron (<code>0 0 * * *</code>) gives you a fresh chart every day at midnight UTC, which is plenty for visibility. If your repo is going viral and you want to see real-time growth, you can increase to every 6 hours (<code>0 */6 * * *</code>), but avoid the 5-minute cron - it burns CI minutes for identical charts and GitHub may pause scheduled runs on repos with no activity for 60 days. Weekly is fine for smaller repos with slow growth.</p>
-    </details>
+      <details open>
+        <summary>How often should I update my star-history chart?</summary>
+        <p><strong>Daily</strong> is the recommended cadence for most projects. Star counts change slowly - even a popular repo might gain 5-20 stars per day, which doesn't produce a visibly different chart at that resolution.</p>
+        <p><strong>Recommended cron intervals:</strong></p>
+        <ul>
+          <li><code>0 0 * * *</code> - daily at midnight UTC (recommended for most repos)</li>
+          <li><code>0 */6 * * *</code> - every 6 hours (for repos going viral)</li>
+          <li><code>0 0 * * 0</code> - weekly (for smaller repos with slow growth)</li>
+        </ul>
+        <p><strong>Avoid:</strong> the 5-minute cron (<code>*/5 * * * *</code>). It burns CI minutes for identical charts and GitHub may pause scheduled runs on repos with no activity for 60 days. Each run uses about 1 minute of CI time, so even daily for a year uses less than 1% of your monthly allowance on the free tier.</p>
+      </details>
     <details open>
       <summary>Can I use mystarhistory without GitHub Actions?</summary>
       <p>Yes. The CLI (<code>mystarhistory.py</code>) is a standalone Python script that runs anywhere with Python 3.6+ and the <code>gh</code> CLI installed and authenticated. You can run it locally: clone the repo, run <code>python3 mystarhistory.py --repo yourname/yourrepo</code>, and commit the resulting SVG to your repo manually. You can also run it in any CI system: GitLab CI, CircleCI, Jenkins, or even a cron job on a server. The GitHub Action is just a Docker container that wraps the CLI and handles the git operations - if you prefer to handle those yourself, the CLI is all you need. The README includes a manual workflow example that clones the repo and runs the script directly in a GitHub Actions step without the Docker Action.</p>
