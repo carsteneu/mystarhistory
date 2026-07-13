@@ -15,11 +15,11 @@ Star history for [`carsteneu/ai-memory-comparison`](https://github.com/carsteneu
 
 ## Why
 
-In 2026, GitHub [changed the stargazers API](https://github.blog/changelog) to restrict star-history data to repo admins and collaborators. The popular [star-history.com](https://www.star-history.com) embedded chart broke overnight: visitors started seeing "Your GitHub token is invalid or expired" instead of the chart.
+Born as a response to the [2026 GitHub stargazers API restriction](https://github.blog/changelog): when the stargazers endpoint was limited to repo admins and collaborators, every client-side star-history embed stopped rendering for public visitors. [star-history.com](https://www.star-history.com) shipped a sealed-token fix for their hosted service, which works — but it keeps your chart dependent on a third-party API.
 
-**mystarhistory** generates the SVG locally and commits it to the repo. No external service, no token in the browser, no rate-limited embed. The chart is just a static file.
+**mystarhistory** is the self-hosted path. The SVG is generated locally with your own token and committed to your repo on an orphan branch. No SaaS in the request path, no external service dependency, no rate-limited embed. The chart is just a static file that renders as long as GitHub renders SVGs.
 
-Inspired by [star-history/star-history](https://github.com/star-history/star-history), the original xkcd-style star history chart. Built because the 2026 API change broke embedded charts for everyone except repo owners with tokens.
+Inspired by [star-history/star-history](https://github.com/star-history/star-history), the original xkcd-style star history chart.
 
 ## Features
 
