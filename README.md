@@ -1,6 +1,6 @@
 # mystarhistory
 
-Generate a star-history SVG chart for any GitHub repo. Self-hosted, no external API, no token-sharing.
+Generate a star-history SVG chart for any GitHub repo. Self-hosted, no SaaS dependency, no token in your README.
 
 [![CI](https://github.com/carsteneu/mystarhistory/actions/workflows/test.yml/badge.svg)](https://github.com/carsteneu/mystarhistory/actions/workflows/test.yml)
 [![Release](https://img.shields.io/github/v/release/carsteneu/mystarhistory)](https://github.com/carsteneu/mystarhistory/releases)
@@ -90,9 +90,21 @@ For GitHub theme auto-switching (light + dark), use the `<picture>` element:
 
 ## As a GitHub Action
 
-Want the chart to update itself? The action pushes SVGs to a dedicated `star-history` branch — an orphan branch that does not pollute your main branch or commit history. Works with branch protection, no PAT or bypass needed.
+Want the chart to update itself? The action pushes SVGs to a dedicated `star-history` branch — an orphan branch that does not pollute your main branch or commit history. Works with branch protection (no bypass needed).
+
+**Note (Jul 14 2026):** GitHub's stargazers API now requires admin/collaborator access. The default `github.token` (the Actions bot identity) is no longer sufficient to read stargazers. You need a fine-grained PAT with **Stargazers: Read-only** permission on the target repo, stored as a secret. See step 1 below.
 
 Add `.github/workflows/star-history.yml` in **your** repo:
+
+**Step 1 — Create a fine-grained PAT** at <https://github.com/settings/personal-access-tokens/new>:
+- Repository access: only the target repo
+- Permissions → Repository permissions → **Stargazers: Read-only**
+- Store the token as a repo secret named `STAR_HISTORY_TOKEN`:
+  ```bash
+  gh secret set STAR_HISTORY_TOKEN --repo OWNER/REPO
+  ```
+
+**Step 2 — Workflow file:**
 
 ```yaml
 name: Star History
@@ -110,6 +122,7 @@ jobs:
       - uses: carsteneu/mystarhistory@v1
         with:
           repos: ${{ github.repository }}
+          token: ${{ secrets.STAR_HISTORY_TOKEN }}
 ```
 
 Then add a `<picture>` block to your README pointing at the `star-history` branch via raw URL:
@@ -146,7 +159,7 @@ Replace `OWNER/REPO` with your repo slug. The branch is created automatically on
 - The action runs in a Docker image (Python 3 + `gh` CLI + `git`).
 - It creates (or reuses) an orphan branch named `star-history` that contains only the SVG files — no repo history, no interference with your codebase.
 - SVGs are written as `star-history-{theme}.svg` (fixed filenames) to the output directory.
-- The default `${{ github.token }}` is enough. No PAT, no branch protection bypass, no Secrets to configure.
+- **A fine-grained PAT with Stargazers: Read-only is required** (stored as `STAR_HISTORY_TOKEN` and passed via the `token` input). The default `github.token` is the Actions bot identity, which is not a collaborator on your repo and was denied access to the stargazers endpoint as of Jul 14 2026. The PAT is used only in CI to read stargazer data and push to the orphan branch — it never appears in your README or reaches visitors' browsers.
 
 The orphan branch is managed in a temporary directory — your main workspace is never modified. Here is the exact git sequence:
 
@@ -204,7 +217,8 @@ jobs:
           sudo apt update && sudo apt install gh -y
       - run: git clone --depth 1 https://github.com/carsteneu/mystarhistory.git /tmp/mystarhistory
       - env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Fine-grained PAT with Stargazers: Read-only on the target repo
+          GH_TOKEN: ${{ secrets.STAR_HISTORY_TOKEN }}
         run: |
           python3 /tmp/mystarhistory/mystarhistory.py --repo ${{ github.repository }} --output star-history.svg
           python3 /tmp/mystarhistory/mystarhistory.py --repo ${{ github.repository }} --output star-history-dark.svg --dark
