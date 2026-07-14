@@ -7,7 +7,7 @@ set -euo pipefail
 if [ -z "${INPUT_TOKEN:-}" ]; then
   echo "ERROR: 'token' input is required." >&2
   echo "Since Jul 14 2026, the default GITHUB_TOKEN can no longer read stargazers." >&2
-  echo "Create a fine-grained PAT with 'Stargazers: Read-only' on the target repo," >&2
+  echo "Create a fine-grained PAT with 'Metadata: Read-only' on the target repo," >&2
   echo "store it as a repo secret (e.g. STAR_HISTORY_TOKEN), and set 'token:' in your workflow." >&2
   exit 1
 fi

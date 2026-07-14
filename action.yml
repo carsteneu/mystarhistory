@@ -26,7 +26,7 @@ inputs:
     required: false
     default: 'chore: update star history [skip ci]'
   token:
-    description: 'Fine-grained PAT with Stargazers: Read-only permission on the target repo. Since Jul 14 2026, the default GITHUB_TOKEN no longer has access to the stargazers endpoint. Store as a repo secret (e.g. STAR_HISTORY_TOKEN) and pass it here.'
+    description: 'Fine-grained PAT with Metadata: Read-only permission on the target repo. Since Jul 14 2026, the default GITHUB_TOKEN no longer has access to the stargazers endpoint. Store as a repo secret (e.g. STAR_HISTORY_TOKEN) and pass it here.'
     required: true
     default: ''
   color:
