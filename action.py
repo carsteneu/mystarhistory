@@ -109,7 +109,7 @@ def main():
         return 1
 
     workspace = Path(os.environ.get("GITHUB_WORKSPACE", "."))
-    github_token = os.environ.get("INPUT_TOKEN") or os.environ.get("GITHUB_TOKEN", "")
+    github_token = os.environ.get("INPUT_TOKEN", "")
 
     git_config = [
         ["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"],
