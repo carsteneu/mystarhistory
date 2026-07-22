@@ -57,19 +57,38 @@ def build_cumulative(dates):
 
 
 def smooth_path(pts):
-    """Catmull-Rom spline → smooth SVG cubic Bezier path."""
+    """Catmull-Rom spline → smooth SVG cubic Bezier path.
+
+    Linear for ≤3 points: sparse datasets shouldn't synthesize curvature
+    from thin air. For longer paths, the first and last segments use half
+    tension on their outer control points so the curve doesn't swing past
+    the endpoint when the off-segment neighbor is far away.
+    """
     if len(pts) < 2:
         return ""
+    if len(pts) <= 3:
+        parts = [f"M {pts[0][0]:.1f},{pts[0][1]:.1f}"]
+        for x, y in pts[1:]:
+            parts.append(f"L {x:.1f},{y:.1f}")
+        return " ".join(parts)
+
+    last = len(pts) - 1
     p = f"M {pts[0][0]:.1f},{pts[0][1]:.1f}"
-    for i in range(len(pts) - 1):
+    for i in range(last):
         p0 = pts[max(0, i-1)]
         p1 = pts[i]
         p2 = pts[i+1]
-        p3 = pts[min(len(pts)-1, i+2)]
-        cp1x = p1[0] + (p2[0] - p0[0]) / 6
-        cp1y = p1[1] + (p2[1] - p0[1]) / 6
-        cp2x = p2[0] - (p3[0] - p1[0]) / 6
-        cp2y = p2[1] - (p3[1] - p1[1]) / 6
+        p3 = pts[min(last, i+2)]
+
+        # Dampen the outer control point of the first and last segments
+        # to avoid boundary overshoot when the neighbor is far away.
+        t_cp1 = 12 if i == last - 1 else 6
+        t_cp2 = 12 if i == 0 else 6
+
+        cp1x = p1[0] + (p2[0] - p0[0]) / t_cp1
+        cp1y = p1[1] + (p2[1] - p0[1]) / t_cp1
+        cp2x = p2[0] - (p3[0] - p1[0]) / t_cp2
+        cp2y = p2[1] - (p3[1] - p1[1]) / t_cp2
         p += f" C {cp1x:.1f},{cp1y:.1f} {cp2x:.1f},{cp2y:.1f} {p2[0]:.1f},{p2[1]:.1f}"
     return p
 
