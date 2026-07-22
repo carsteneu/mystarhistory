@@ -29,6 +29,12 @@ from mystarhistory import fetch_stargazers, generate_svg
 
 
 def parse_inputs(env):
+    def _int(name, default):
+        try:
+            return int(env.get(name, "").strip() or default)
+        except ValueError:
+            return default
+
     return {
         "repos": [r.strip() for r in env.get("INPUT_REPOS", "").split(",") if r.strip()],
         "themes": [t.strip() for t in env.get("INPUT_THEMES", "light,dark").split(",") if t.strip()],
@@ -37,6 +43,8 @@ def parse_inputs(env):
         "commit_message": env.get("INPUT_COMMIT_MESSAGE", "chore: update star history [skip ci]"),
         "color": env.get("INPUT_COLOR", "#dd4528"),
         "title": env.get("INPUT_TITLE", "Star History"),
+        "timeout": _int("INPUT_TIMEOUT", 180),
+        "per_page": _int("INPUT_PER-PAGE", 100),
     }
 
 
@@ -126,7 +134,7 @@ def main():
     generated = []
 
     for repo in cfg["repos"]:
-        dates = fetch_stargazers(repo)
+        dates = fetch_stargazers(repo, timeout=cfg["timeout"], per_page=cfg["per_page"])
         if not dates:
             print(f"No stargazers for {repo}, skipping", file=sys.stderr)
             continue

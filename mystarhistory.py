@@ -23,13 +23,18 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 FONT_FILE = os.path.join(SCRIPT_DIR, "handlee-subset.woff2")
 
 
-def fetch_stargazers(repo):
-    """Fetch star timestamps from GitHub API via gh CLI."""
+def fetch_stargazers(repo, timeout=180, per_page=100):
+    """Fetch star timestamps from GitHub API via gh CLI.
+
+    per_page=100 reduces request count by ~3x vs default (30), critical
+    for repos with many stars. timeout defaults to 180s (was 60s) — a
+    10k-star repo paginates through ~100 pages and can hit 60s.
+    """
     result = subprocess.run(
         ['gh', 'api', '-H', 'Accept: application/vnd.github.v3.star+json',
-         f'/repos/{repo}/stargazers', '--paginate',
+         f'/repos/{repo}/stargazers?per_page={per_page}', '--paginate',
          '--jq', '.[].starred_at'],
-        capture_output=True, text=True, timeout=60
+        capture_output=True, text=True, timeout=timeout
     )
     if result.returncode != 0:
         print(f"ERROR: gh command failed: {result.stderr}", file=sys.stderr)
@@ -77,6 +82,29 @@ def fmt(n):
     return str(n)
 
 
+def nice_step(max_val, target_ticks=6, floor=25):
+    """Pick a "nice" axis step (1/2/5 × 10^n) near max_val / target_ticks.
+
+    Keeps axis labels readable across orders of magnitude. `floor` caps the
+    density for small repos: at 20-25 stars the chart doesn't need more
+    than 1-2 grid lines, so we never pick a step smaller than 25.
+    """
+    if max_val <= 0:
+        return floor
+    raw = max_val / target_ticks
+    mag = 10 ** math.floor(math.log10(raw)) if raw > 0 else 1
+    norm = raw / mag
+    if norm < 1.5:
+        step = 1
+    elif norm < 3:
+        step = 2
+    elif norm < 7:
+        step = 5
+    else:
+        step = 10
+    return max(step * mag, floor)
+
+
 def text_el(x, y, content, font_family, size=16, weight='bold', fill='#000', anchor=None, transform=None):
     attrs = [f'x="{x}"', f'y="{y}"', f'fill="{fill}"', f'font-size="{size}"',
              f'font-family="{font_family}"', f'font-weight="{weight}"']
@@ -99,7 +127,8 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=
     plot_w, plot_h = w - pad_l - pad_r, h - pad_t - pad_b
 
     max_stars = cum_data[-1][1]
-    y_max = max(25, math.ceil(max_stars / 25) * 25)
+    y_step = max(1, nice_step(max_stars))
+    y_max = max(y_step, math.ceil(max_stars / y_step) * y_step)
 
     first_date = datetime.fromisoformat(cum_data[0][0])
     last_date = datetime.fromisoformat(cum_data[-1][0])
@@ -162,7 +191,7 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=
 
     # Y-axis
     y_elements = []
-    for i in range(0, y_max + 1, 25):
+    for i in range(0, y_max + 1, y_step):
         y_val = pad_t + plot_h - (i / y_max) * plot_h
         if i > 0:
             y_elements.append(
@@ -186,8 +215,15 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=
             prev_month = month_key
 
     x_labels = []
-    for i, (x, dt) in enumerate(month_positions):
-        cx = (x + month_positions[i+1][0]) / 2 if i < len(month_positions) - 1 else (x + (w - pad_r)) / 2
+    max_x_labels = 10
+    if len(month_positions) > max_x_labels:
+        indices = [round(i * (len(month_positions) - 1) / (max_x_labels - 1))
+                   for i in range(max_x_labels)]
+        visible = [month_positions[i] for i in indices]
+    else:
+        visible = month_positions
+    for i, (x, dt) in enumerate(visible):
+        cx = (x + visible[i+1][0]) / 2 if i < len(visible) - 1 else (x + (w - pad_r)) / 2
         x_labels.append(text_el(f'{cx:.1f}', pad_t + plot_h + 25, dt.strftime('%b %Y'), FF, fill=FG))
     x_labels.append(text_el('50%', h - 8, 'Date', FF, size=17, fill=FG))
 
@@ -268,6 +304,12 @@ repo admin/collaborator access. Run as the repo owner with `gh auth login`.
     parser.add_argument('--width', type=int, default=800, help='Chart width in px (default: 800)')
     parser.add_argument('--height', type=int, default=533, help='Chart height in px (default: 533)')
     parser.add_argument('--dark', action='store_true', help='Use dark theme (GitHub-dark-like palette)')
+    parser.add_argument('--timeout', type=int, default=180,
+                        help='Timeout in seconds for the gh api stargazers fetch (default: 180). '
+                             'Increase for repos with very many stars.')
+    parser.add_argument('--per-page', type=int, default=100,
+                        help='gh api page size (default: 100, max). Smaller = more requests, '
+                             'larger is unsupported by GitHub.')
 
     args = parser.parse_args()
 
@@ -277,7 +319,7 @@ repo admin/collaborator access. Run as the repo owner with `gh auth login`.
     if not args.color.startswith('#'):
         args.color = '#' + args.color
 
-    dates = fetch_stargazers(args.repo)
+    dates = fetch_stargazers(args.repo, timeout=args.timeout, per_page=args.per_page)
     if not dates:
         print(f"ERROR: no stargazers found for {args.repo}", file=sys.stderr)
         sys.exit(1)

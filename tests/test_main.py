@@ -38,7 +38,7 @@ def test_main_prepends_hash_to_color(monkeypatch, tmp_path):
         "--color", "0066cc",
         "--output", str(tmp_path / "x.svg"),
     ])
-    monkeypatch.setattr(mystarhistory, "fetch_stargazers", lambda r: ["2024-01-15T00:00:00Z"])
+    monkeypatch.setattr(mystarhistory, "fetch_stargazers", lambda r, **kw: ["2024-01-15T00:00:00Z"])
     monkeypatch.setattr(mystarhistory, "generate_svg", fake_generate)
 
     mystarhistory.main()
@@ -57,7 +57,7 @@ def test_main_passes_dark_flag(monkeypatch, tmp_path):
         "--dark",
         "--output", str(tmp_path / "x.svg"),
     ])
-    monkeypatch.setattr(mystarhistory, "fetch_stargazers", lambda r: ["2024-01-15T00:00:00Z"])
+    monkeypatch.setattr(mystarhistory, "fetch_stargazers", lambda r, **kw: ["2024-01-15T00:00:00Z"])
     monkeypatch.setattr(mystarhistory, "generate_svg", fake_generate)
 
     mystarhistory.main()
@@ -70,7 +70,7 @@ def test_main_exits_on_empty_stargazers(monkeypatch, capsys):
         "--repo", "owner/name",
         "--output", "/tmp/whatever.svg",
     ])
-    monkeypatch.setattr(mystarhistory, "fetch_stargazers", lambda r: [])
+    monkeypatch.setattr(mystarhistory, "fetch_stargazers", lambda r, **kw: [])
 
     with pytest.raises(SystemExit) as excinfo:
         mystarhistory.main()

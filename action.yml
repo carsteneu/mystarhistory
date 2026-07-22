@@ -37,6 +37,14 @@ inputs:
     description: 'Chart title shown above the plot.'
     required: false
     default: 'Star History'
+  timeout:
+    description: 'Seconds to wait for the gh api stargazers fetch before failing (default: 180). Repos with many stars paginate through ~100 pages; raise this if you hit timeouts.'
+    required: false
+    default: '180'
+  per-page:
+    description: 'gh api page size (default: 100, GitHub max). Smaller values produce more requests and are rarely useful.'
+    required: false
+    default: '100'
 outputs:
   changed:
     description: '"true" if a new chart was generated and committed, "false" otherwise.'

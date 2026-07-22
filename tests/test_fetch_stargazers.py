@@ -68,6 +68,7 @@ def test_uses_correct_api_endpoint(monkeypatch):
 
     assert captured["args"][0] == "gh"
     assert captured["args"][1] == "api"
-    assert "/repos/owner/name/stargazers" in captured["args"]
+    assert any(a.startswith("/repos/owner/name/stargazers") for a in captured["args"])
+    assert any(a.startswith("/repos/owner/name/stargazers?per_page=") for a in captured["args"])
     assert "--paginate" in captured["args"]
     assert "Accept: application/vnd.github.v3.star+json" in captured["args"]
