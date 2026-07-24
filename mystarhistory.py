@@ -14,6 +14,7 @@ import argparse
 import base64
 import math
 import os
+import re
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -95,6 +96,16 @@ def smooth_path(pts):
         cp2y = p2[1] - (p3[1] - p1[1]) / t_cp2
         p += f" C {cp1x:.1f},{cp1y:.1f} {cp2x:.1f},{cp2y:.1f} {p2[0]:.1f},{p2[1]:.1f}"
     return p
+
+
+def normalize_color(color):
+    """Prepend '#' to bare hex values (3, 4, 6 or 8 digits); pass every
+    other paint value through untouched (named colors, rgb(), #hex).
+    Regression guard: blindly prepending '#' turned 'red' into invalid
+    '#red', silently breaking the line color."""
+    if re.fullmatch(r'[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8}', color):
+        return '#' + color
+    return color
 
 
 def fmt(n):
@@ -352,8 +363,7 @@ repo admin/collaborator access. Run as the repo owner with `gh auth login`.
     if '/' not in args.repo:
         parser.error("--repo must be in 'owner/name' format")
 
-    if not args.color.startswith('#'):
-        args.color = '#' + args.color
+    args.color = normalize_color(args.color)
 
     dates = fetch_stargazers(args.repo, timeout=args.timeout, per_page=args.per_page)
     if not dates:

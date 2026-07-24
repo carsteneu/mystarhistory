@@ -44,6 +44,17 @@ def test_parse_inputs_per_page_and_timeout():
     assert cfg["timeout"] == 99
 
 
+def test_parse_inputs_normalizes_bare_hex_color():
+    """color: e3b341 (forgotten #) must not silently break the SVG."""
+    cfg = action.parse_inputs({"INPUT_COLOR": "e3b341"})
+    assert cfg["color"] == "#e3b341"
+
+
+def test_parse_inputs_keeps_named_color():
+    cfg = action.parse_inputs({"INPUT_COLOR": "red"})
+    assert cfg["color"] == "red"
+
+
 # --- write_outputs ----------------------------------------------------------
 
 def test_write_outputs_single_line_values(tmp_path, monkeypatch):

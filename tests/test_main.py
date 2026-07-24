@@ -45,6 +45,28 @@ def test_main_prepends_hash_to_color(monkeypatch, tmp_path):
     assert captured["color"] == "#0066cc"
 
 
+def test_normalize_color_bare_hex_gets_hash():
+    assert mystarhistory.normalize_color("0066cc") == "#0066cc"
+    assert mystarhistory.normalize_color("abc") == "#abc"
+    assert mystarhistory.normalize_color("AABBCCDD") == "#AABBCCDD"
+
+
+def test_normalize_color_passes_through_valid_paint_values():
+    """Named colors, rgb() and #hex must not be mangled (regression:
+    'red' used to become invalid '#red')."""
+    assert mystarhistory.normalize_color("red") == "red"
+    assert mystarhistory.normalize_color("#0066cc") == "#0066cc"
+    assert mystarhistory.normalize_color("rgb(1,2,3)") == "rgb(1,2,3)"
+    assert mystarhistory.normalize_color("rebeccapurple") == "rebeccapurple"
+
+
+def test_normalize_color_rejects_invalid_hex_lengths():
+    """5- or 7-char hex-ish strings are not valid hex colors: pass through
+    unchanged rather than fabricating an invalid #value."""
+    assert mystarhistory.normalize_color("added") == "added"
+    assert mystarhistory.normalize_color("abcdef0") == "abcdef0"
+
+
 def test_main_passes_dark_flag(monkeypatch, tmp_path):
     captured = {}
 

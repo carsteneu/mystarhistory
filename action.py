@@ -25,7 +25,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from mystarhistory import fetch_stargazers, generate_svg
+from mystarhistory import fetch_stargazers, generate_svg, normalize_color
 
 
 def parse_inputs(env):
@@ -41,7 +41,7 @@ def parse_inputs(env):
         "output_dir": env.get("INPUT_OUTPUT_DIR", "assets/my-star-history"),
         "branch": env.get("INPUT_BRANCH", "star-history"),
         "commit_message": env.get("INPUT_COMMIT_MESSAGE", "chore: update star history [skip ci]"),
-        "color": env.get("INPUT_COLOR", "#dd4528"),
+        "color": normalize_color(env.get("INPUT_COLOR", "#dd4528")),
         "title": env.get("INPUT_TITLE", "Star History"),
         "timeout": _int("INPUT_TIMEOUT", 180),
         "per_page": _int("INPUT_PER_PAGE", 100),
