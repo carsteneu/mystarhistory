@@ -274,10 +274,13 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=
         x_labels.append(text_el(f'{x:.1f}', pad_t + plot_h + 25, dt.strftime('%b %Y'), FF, fill=FG, anchor='middle'))
     x_labels.append(text_el('50%', h - 8, 'Date', FF, size=17, fill=FG, anchor='middle'))
 
-    # End label (star count)
+    # End label (star count). Anchor END to the left of the endpoint so
+    # the rising line (which approaches from lower-left) never crosses
+    # the text. Sit the baseline 3px above the topmost gridline (pad_t)
+    # so the digit row sits cleanly above the plot frame.
     last_x, last_y = points[-1]
-    label_x = min(last_x + 12, w - pad_r - 30)
-    label_y = max(last_y - 8, pad_t + 20)
+    label_x = max(last_x - 12, pad_l + 4)
+    label_y = pad_t - 3
 
     svg_parts = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -302,7 +305,7 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=
         f'  <path d="{area_path}" fill="url(#g)"/>',
         f'  <path d="{line_path}" fill="none" stroke="{color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"{XKCD}/>',
         f'  <circle cx="{last_x:.1f}" cy="{last_y:.1f}" r="5" fill="{color}" stroke="{DOT_STROKE}" stroke-width="2"{XKCD}/>',
-        text_el(f'{label_x:.1f}', f'{label_y:.1f}', max_stars, FF, size=18, fill=color),
+            text_el(f'{label_x:.1f}', f'{label_y:.1f}', max_stars, FF, size=18, fill=color, anchor='end'),
         f'  <a href="https://github.com/carsteneu/mystarhistory" target="_blank" rel="noopener"><text x="{w - pad_r - 2}" y="{h - 6}" font-size="13" font-family="Handlee, cursive" fill="{"#fff" if dark else "#000"}" text-anchor="end">Made with carsteneu/mystarhistory</text></a>',
         '</svg>'
     ]
