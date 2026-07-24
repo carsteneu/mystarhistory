@@ -35,6 +35,15 @@ def test_parse_inputs_custom_branch():
     assert cfg["branch"] == "gh-assets"
 
 
+def test_parse_inputs_per_page_and_timeout():
+    """GitHub maps input names to INPUT_<NAME> with hyphens becoming
+    underscores: per-page -> INPUT_PER_PAGE (regression: was INPUT_PER-PAGE,
+    which never exists, silently ignoring the input)."""
+    cfg = action.parse_inputs({"INPUT_PER_PAGE": "42", "INPUT_TIMEOUT": "99"})
+    assert cfg["per_page"] == 42
+    assert cfg["timeout"] == 99
+
+
 # --- write_outputs ----------------------------------------------------------
 
 def test_write_outputs_single_line_values(tmp_path, monkeypatch):

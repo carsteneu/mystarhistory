@@ -64,8 +64,12 @@ def smooth_path(pts):
     tension on their outer control points so the curve doesn't swing past
     the endpoint when the off-segment neighbor is far away.
     """
-    if len(pts) < 2:
+    if not pts:
         return ""
+    if len(pts) == 1:
+        # Single day of stars: bare moveto keeps the path valid (line and
+        # area render as nothing, the endpoint dot still shows the count).
+        return f"M {pts[0][0]:.1f},{pts[0][1]:.1f}"
     if len(pts) <= 3:
         parts = [f"M {pts[0][0]:.1f},{pts[0][1]:.1f}"]
         for x, y in pts[1:]:
@@ -252,10 +256,12 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=
             visible[-1] = month_positions[-1]
         else:
             visible.append(month_positions[-1])
-    for i, (x, dt) in enumerate(visible):
-        cx = (x + visible[i+1][0]) / 2 if i < len(visible) - 1 else (x + (w - pad_r)) / 2
-        x_labels.append(text_el(f'{cx:.1f}', pad_t + plot_h + 25, dt.strftime('%b %Y'), FF, fill=FG))
-    x_labels.append(text_el('50%', h - 8, 'Date', FF, size=17, fill=FG))
+    # Labels sit on the month tick itself (centered), not at segment
+    # midpoints: midpoint layout pushes the last label past the viewBox
+    # edge when the final month is near the right border.
+    for x, dt in visible:
+        x_labels.append(text_el(f'{x:.1f}', pad_t + plot_h + 25, dt.strftime('%b %Y'), FF, fill=FG, anchor='middle'))
+    x_labels.append(text_el('50%', h - 8, 'Date', FF, size=17, fill=FG, anchor='middle'))
 
     # End label (star count)
     last_x, last_y = points[-1]

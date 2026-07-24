@@ -6,8 +6,10 @@ def test_empty_returns_empty_string():
     assert smooth_path([]) == ""
 
 
-def test_single_point_returns_empty_string():
-    assert smooth_path([(10, 20)]) == ""
+def test_single_point_returns_bare_moveto():
+    """A single data point (all stars on one day) must still yield a valid
+    path: bare M command, no dangling L that would malform the area path."""
+    assert smooth_path([(10, 20)]) == "M 10.0,20.0"
 
 
 def test_two_points_starts_with_move_to():

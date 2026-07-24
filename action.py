@@ -44,7 +44,7 @@ def parse_inputs(env):
         "color": env.get("INPUT_COLOR", "#dd4528"),
         "title": env.get("INPUT_TITLE", "Star History"),
         "timeout": _int("INPUT_TIMEOUT", 180),
-        "per_page": _int("INPUT_PER-PAGE", 100),
+        "per_page": _int("INPUT_PER_PAGE", 100),
     }
 
 
@@ -133,6 +133,7 @@ def main():
 
     generated = []
 
+    multi = len(cfg["repos"]) > 1
     for repo in cfg["repos"]:
         dates = fetch_stargazers(repo, timeout=cfg["timeout"], per_page=cfg["per_page"])
         if not dates:
@@ -140,7 +141,11 @@ def main():
             continue
         for theme in cfg["themes"]:
             dark = theme == "dark"
-            fname = f"star-history-{theme}.svg"
+            # Single-repo keeps the classic filename so existing README
+            # embeds keep working; multi-repo needs the slug to avoid
+            # each repo overwriting the previous one.
+            slug = repo.replace("/", "-") + "-" if multi else ""
+            fname = f"star-history-{slug}{theme}.svg"
             generate_svg(repo, dates, str(out_dir / fname), cfg["color"], cfg["title"], dark=dark)
             generated.append(f"{cfg['output_dir']}/{fname}")
             print(f"Generated {cfg['output_dir']}/{fname}")
