@@ -234,13 +234,24 @@ def generate_svg(repo, dates, output, color, title, width=800, height=533, dark=
             prev_month = month_key
 
     x_labels = []
-    max_x_labels = 10
-    if len(month_positions) > max_x_labels:
-        indices = [round(i * (len(month_positions) - 1) / (max_x_labels - 1))
-                   for i in range(max_x_labels)]
-        visible = [month_positions[i] for i in indices]
-    else:
-        visible = month_positions
+    # Sample by X-position spacing, not month index. Stars are rarely
+    # evenly distributed in time (viral growth, launches), so equal-month
+    # sampling bunches labels at the dense end. Pick labels left-to-right,
+    # only adding one when it's far enough from the previous in pixels.
+    min_label_px = 70
+    last_label_x = -min_label_px  # ensures first month is always picked
+    visible = []
+    for x, dt in month_positions:
+        if x - last_label_x >= min_label_px:
+            visible.append((x, dt))
+            last_label_x = x
+    # Always include the final month so the right edge shows the latest
+    # date. If that forces a too-close pair, drop the second-to-last instead.
+    if month_positions and (not visible or visible[-1][0] != month_positions[-1][0]):
+        if visible and month_positions[-1][0] - visible[-1][0] < min_label_px:
+            visible[-1] = month_positions[-1]
+        else:
+            visible.append(month_positions[-1])
     for i, (x, dt) in enumerate(visible):
         cx = (x + visible[i+1][0]) / 2 if i < len(visible) - 1 else (x + (w - pad_r)) / 2
         x_labels.append(text_el(f'{cx:.1f}', pad_t + plot_h + 25, dt.strftime('%b %Y'), FF, fill=FG))
