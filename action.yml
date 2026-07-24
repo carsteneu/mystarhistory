@@ -30,7 +30,7 @@ inputs:
     required: true
     default: ''
   color:
-    description: 'Chart line color as #rrggbb. Default is star-history red.'
+    description: 'Chart line color. Accepts #hex, bare hex (e3b341), or SVG named colors (rebeccapurple). Default is star-history red.'
     required: false
     default: '#dd4528'
   title:

@@ -55,8 +55,8 @@ python3 mystarhistory.py --repo yourname/yourrepo
 # Custom output location
 python3 mystarhistory.py --repo yourname/yourrepo --output docs/stars.svg
 
-# Custom color and title
-python3 mystarhistory.py --repo yourname/yourrepo --color 0066cc --title "Project Growth"
+# Custom color and title (accepts #hex, bare hex, or SVG named colors)
+python3 mystarhistory.py --repo yourname/yourrepo --color rebeccapurple --title "Project Growth"
 
 # Larger chart
 python3 mystarhistory.py --repo yourname/yourrepo --width 1200 --height 800
@@ -142,14 +142,16 @@ Replace `OWNER/REPO` with your repo slug. The branch is created automatically on
 
 | input | default | description |
 |---|---|---|
-| `repos` | current repo | Comma-separated `owner/repo` list. |
+| `repos` | current repo | Comma-separated `owner/repo` list. With multiple repos, each chart is written as `star-history-{owner}-{name}-{theme}.svg`; with a single repo (the common case), filenames stay `star-history-{theme}.svg` so existing embeds keep working. |
 | `themes` | `light,dark` | Comma-separated subset of `{light, dark}`. |
 | `output-dir` | `assets/my-star-history` | Where SVGs are written. |
 | `branch` | `star-history` | Orphan branch to push to. Not protected, no main pollution. |
 | `commit-message` | `chore: update star history [skip ci]` | Commit message. |
-| `token` | `${{ github.token }}` | Token for stargazers API and git push. |
-| `color` | `#dd4528` | Chart line color as `#rrggbb`. |
+| `token` | `${{ github.token }}` | Fine-grained PAT with Metadata: Read-only and Contents: Read and write. Required (the default `github.token` cannot read stargazers since Jul 14 2026). |
+| `color` | `#dd4528` | Chart line color. Accepts `#hex`, bare hex (`e3b341`), or [SVG named colors](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color) (`rebeccapurple`). |
 | `title` | `Star History` | Chart title. |
+| `timeout` | `180` | Seconds to wait for the `gh api stargazers` fetch. Raise for very large repos (10k+ stars paginate through ~100+ pages). |
+| `per-page` | `100` | `gh api` page size (GitHub max). Smaller values are rarely useful. |
 
 ### Outputs
 
@@ -160,7 +162,7 @@ Replace `OWNER/REPO` with your repo slug. The branch is created automatically on
 
 - The action runs in a Docker image (Python 3 + `gh` CLI + `git`).
 - It creates (or reuses) an orphan branch named `star-history` that contains only the SVG files — no repo history, no interference with your codebase.
-- SVGs are written as `star-history-{theme}.svg` (fixed filenames) to the output directory.
+- SVGs are written as `star-history-{theme}.svg` (or `star-history-{owner}-{name}-{theme}.svg` when multiple repos are charted) to the output directory.
 - **A fine-grained PAT with Metadata: Read-only and Contents: Read and write is required** (stored as `STAR_HISTORY_TOKEN` and passed via the `token` input). The default `github.token` is the Actions bot identity, which is not a collaborator on your repo and was denied access to the stargazers endpoint as of Jul 14 2026. Metadata is required to read stargazer data, Contents is required to push the regenerated SVG to the orphan branch. The PAT never appears in your README or reaches visitors' browsers.
 
 The orphan branch is managed in a temporary directory — your main workspace is never modified. Here is the exact git sequence:
